@@ -1,0 +1,26 @@
+Task Name,Task ID,Week,Day,Role,Category,Duration,Priority,Status,Dependencies,Description
+GitHub Repo Setup,SETUP-1,1,1,DevOps,Setup,2 hours,HIGH,TODO,,Create GitHub repo from template. Add team members. Set branch protection. Create PR template.
+Local Dev Setup (Everyone),SETUP-2,1,1,All,Setup,2 hours,HIGH,TODO,,Clone repo and follow Setup Instructions. Verify frontend and backend run locally.
+Team Documentation & First Commit,SETUP-3,1,1,All,Setup,30 min,HIGH,TODO,SETUP-2,Add team member names to TEAM.md. Create first PR.
+Three.js Basic Scene Setup,FEATURE-1,1,2-3,3D Graphics,3D Graphics,4 hours,HIGH,TODO,SETUP-2,Initialize Three.js scene with camera and renderer. Create function curve plotting function.
+React UI Layout,FEATURE-2,1,2-3,Frontend,Frontend,4 hours,HIGH,TODO,SETUP-2,Build layout with sidebar and 3D view. Create FunctionInput and ExplanationPanel components.
+FastAPI Backend Skeleton,FEATURE-3,1,2-3,Backend,Backend,3 hours,HIGH,TODO,SETUP-2,"Create FastAPI app with health check. Set up CORS. Create /api/math/evaluate endpoint."
+Frontend-Backend Integration,FEATURE-4,1,4-5,Frontend,Integration,3 hours,HIGH,TODO,"FEATURE-2,FEATURE-3",Connect frontend API client to backend endpoints. Test full round-trip.
+Function Graphing (Backend),FEATURE-5,1,4-5,Backend,Backend,3 hours,HIGH,TODO,FEATURE-3,Implement symbolic differentiation with SymPy. Create /api/math/derivative endpoint.
+Three.js to React Integration,FEATURE-6,1,4-5,3D Graphics + Frontend,Integration,2 hours,HIGH,TODO,"FEATURE-1,FEATURE-2",Refactor Three.js code into React hook. Test prop changes and hot-reload.
+Claude API Integration Setup,FEATURE-7,1,4-5,Backend,Backend,2 hours,HIGH,TODO,FEATURE-3,Add Anthropic SDK to requirements. Create /api/ai/explain endpoint.
+Derivative Visualization in 3D,FEATURE-8,2,1-2,3D Graphics,3D Graphics,5 hours,HIGH,TODO,"FEATURE-6,FEATURE-5",Add tangent line to 3D scene. Create slider to control point position.
+Derivative UI & Explanation,FEATURE-9,2,1-2,Frontend,Frontend,3 hours,HIGH,TODO,"FEATURE-4,FEATURE-7",Add slider UI. Display derivative value. Connect to Claude API for explanations.
+Testing & Bug Fixes (Derivatives),FEATURE-10,2,1-2,All,Testing,2 hours,HIGH,TODO,"FEATURE-8,FEATURE-9",Test derivatives with 10+ functions. Handle edge cases. Verify smooth performance.
+Integral Calculation (Backend),FEATURE-11,2,3-4,Backend,Backend,3 hours,HIGH,TODO,FEATURE-5,Implement definite integrals with SymPy. Create /api/math/integral endpoint.
+Integral Visualization in 3D,FEATURE-12,2,3-4,3D Graphics,3D Graphics,5 hours,HIGH,TODO,"FEATURE-6,FEATURE-11",Add shaded area under curve. Create sliders for bounds. Animate area fill.
+Integral UI & Explanation,FEATURE-13,2,3-4,Frontend,Frontend,3 hours,HIGH,TODO,"FEATURE-4,FEATURE-7",Add bounds sliders. Display integral value. Connect to Claude API.
+Design Polish,POLISH-1,2,5,Frontend + 3D Graphics,Polish,3 hours,MEDIUM,TODO,"FEATURE-8,FEATURE-12",Implement color scheme. Add animations. Polish typography and spacing.
+Production Deployment,DEPLOY-1,2,5,DevOps,Deployment,3 hours,HIGH,TODO,"FEATURE-8,FEATURE-12",Deploy frontend to Vercel. Deploy backend to Railway. Set environment variables.
+Documentation & Handoff,DOCS-1,2,5,All,Documentation,2 hours,MEDIUM,TODO,"FEATURE-8,FEATURE-12",Update README. Document API. Write deployment guide. List known issues.
+Demo & Presentation Prep,DEMO-1,2,5,All,Demo,1 hour,MEDIUM,TODO,"FEATURE-8,FEATURE-12",Write demo script. Prepare talking points. Do final run-through.
+Stretch: Limits Explorer,STRETCH-1,2,5+,3D Graphics + Backend,Features,4 hours,LOW,TODO,,"Implement limits visualization. Approach limit from left/right. Add explanation."
+Stretch: Custom Function Input,STRETCH-2,2,5+,Frontend + Backend,Features,2 hours,LOW,TODO,,"Build function parser. Validate input. Better error handling."
+Stretch: Save/Share Links,STRETCH-3,2,5+,Backend + Frontend,Features,3 hours,LOW,TODO,,"Store visualization state. Generate shareable URLs. Load state from URL."
+Stretch: Dark Mode,STRETCH-4,2,5+,Frontend + 3D Graphics,Features,2 hours,LOW,TODO,,"Add dark mode toggle. Update color schemes. Persist preference."
+Stretch: Mobile Responsive,STRETCH-5,2,5+,Frontend,Features,4 hours,LOW,TODO,,"Make responsive layout. Touch-friendly controls. Test on mobile browsers."
