@@ -1,0 +1,140 @@
+.control-panel {
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cp-section {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cp-section:last-child {
+  border-bottom: none;
+}
+
+.cp-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.fn-input {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 9px 12px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  transition: border-color 0.15s;
+}
+
+.fn-input:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+}
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.preset-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+
+.preset-btn:hover {
+  border-color: var(--accent-blue);
+  color: var(--text-primary);
+}
+
+.slider {
+  width: 100%;
+  accent-color: var(--accent-blue);
+  cursor: pointer;
+}
+
+.slider-label {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.calc-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 9px 14px;
+  color: var(--accent-cyan);
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.calc-btn:hover:not(:disabled) {
+  border-color: var(--accent-cyan);
+  background: rgba(0, 212, 255, 0.08);
+}
+
+.calc-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.backend-result {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 10px 12px;
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.backend-result code {
+  color: var(--accent-cyan);
+  font-family: 'Fira Code', monospace;
+}
+
+.backend-result strong {
+  color: var(--accent-green);
+}
+
+.explain-btn {
+  background: linear-gradient(135deg, #1a1a4a, #2a1a4a);
+  border: 1px solid var(--accent-purple);
+  border-radius: 7px;
+  padding: 11px 14px;
+  color: var(--accent-purple);
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: all 0.15s;
+  width: 100%;
+}
+
+.explain-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2a2a5a, #3a2a5a);
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.3);
+}
+
+.explain-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
