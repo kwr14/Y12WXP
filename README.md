@@ -27,9 +27,30 @@ Built as a work-experience project for Year 12 A-level students.
 |------|---------|---------|
 | Node.js | ≥ 18 | https://nodejs.org |
 | Python | ≥ 3.11 | https://python.org |
+| uv | latest | see below |
 | Git | any | https://git-scm.com |
 
 You also need an **Anthropic API key** for the AI explanations (get one free at https://console.anthropic.com).
+
+---
+
+### What is uv?
+
+**uv** is a modern Python package and environment manager — a much faster drop-in replacement for `pip` and `venv` combined. Written in Rust, it installs packages 10–100× faster than pip and handles virtual environments automatically. It's quickly becoming the standard tool for Python projects.
+
+Install it once on your machine:
+
+```bash
+# macOS / Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows (PowerShell)
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+Restart your terminal afterwards. Verify with `uv --version`.
+
+> Docs: https://docs.astral.sh/uv
 
 ---
 
@@ -48,20 +69,16 @@ git checkout final
 ```bash
 cd backend
 
-# Create and activate a virtual environment
-python -m venv venv
-source venv/bin/activate        # macOS / Linux
-# venv\Scripts\activate         # Windows
-
-# Install Python dependencies
-pip install -r requirements.txt
+# Create a virtual environment and install all dependencies in one step
+uv venv
+uv pip install -r requirements.txt
 
 # Add your API key
 cp .env.example .env
 # Open .env and set:  ANTHROPIC_API_KEY=sk-ant-...
 
 # Start the backend server
-python main.py
+uv run python main.py
 # → running at http://localhost:8000
 # → API docs at http://localhost:8000/docs
 ```
@@ -110,8 +127,7 @@ Then open http://localhost:5173.
 
 ```bash
 cd backend
-source venv/bin/activate
-pytest tests/ -v
+uv run pytest tests/ -v
 ```
 
 Expected output: 6 passing tests covering derivatives, integrals, and function evaluation.

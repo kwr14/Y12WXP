@@ -126,7 +126,7 @@ Build an **interactive 3D web application** that makes Calculus intuitive and en
 
 **Day 1-2: Setup & Learning**
 - [ ] GitHub repo setup, branch strategy, PR template
-- [ ] Environment setup (Node.js, Python, venv)
+- [ ] Environment setup (Node.js, Python, uv)
 - [ ] Team alignment: architecture walkthrough, role assignments
 - [ ] Learning sprints: Three.js tutorial (graphics team), React hooks (frontend), FastAPI (backend)
 

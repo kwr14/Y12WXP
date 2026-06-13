@@ -535,15 +535,18 @@ jobs:
         with:
           node-version: "18"
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
       - name: Install Python dependencies
         run: |
           cd backend
-          pip install -r requirements.txt
+          uv pip install --system -r requirements.txt
 
       - name: Run Python tests
         run: |
           cd backend
-          pytest
+          uv run pytest
 
       - name: Install Node dependencies
         run: |
@@ -564,12 +567,15 @@ jobs:
 ### **File: `backend/Dockerfile`**
 
 ```dockerfile
-FROM python:3.9
+FROM python:3.11-slim
+
+# Install uv (fast Python package manager)
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN uv pip install --system --no-cache -r requirements.txt
 
 COPY . .
 
@@ -586,6 +592,7 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 4. **Claude API is wrapped** in `routers/ai.py` (ready to use)
 5. **Math calculations use SymPy** (symbolic math library)
 6. **API is already connected** via `frontend/src/api/client.js`
+7. **Python deps managed with uv** — faster than pip, no manual venv activation
 
 ---
 
@@ -595,11 +602,11 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 # Frontend
 cd frontend && npm install && npm run dev
 
-# Backend  
-cd backend && pip install -r requirements.txt && python -m uvicorn main:app --reload
+# Backend (uv handles the virtual environment automatically)
+cd backend && uv venv && uv pip install -r requirements.txt && uv run python main.py
 
 # Tests
-cd backend && pytest
+cd backend && uv run pytest
 
 # Build for production
 cd frontend && npm run build

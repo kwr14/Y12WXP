@@ -254,7 +254,7 @@ Add tangent line visualization, animate slider changes smoothly.
 
 9. **Anthropic Claude API**
    - [Anthropic API Docs](https://docs.anthropic.com)
-   - Setup: `pip install anthropic`
+   - Setup: `uv pip install anthropic` (or it's already in `requirements.txt`)
    - Authentication with API key
    - Basic message creation
    - Time commitment: 1 hour

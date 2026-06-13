@@ -60,7 +60,7 @@ calculus-explainer/
 │   │   ├── test_math.py
 │   │   ├── test_api.py
 │   │   └── conftest.py
-│   └── venv/                         # Python virtual env (NOT IN GIT)
+│   └── .venv/                        # Python virtual env created by uv (NOT IN GIT)
 │
 ├── .github/
 │   ├── workflows/

@@ -50,11 +50,11 @@ htmlcov/
 *.temp
 .cache/
 
-# Virtual environments
+# Virtual environments (uv creates .venv by default)
+.venv/
 venv/
 env/
 ENV/
-.venv
 
 # IDE files
 .vscode/

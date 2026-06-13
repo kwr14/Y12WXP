@@ -64,11 +64,10 @@ npm test             # Run tests
 ### Backend
 ```bash
 cd backend
-python -m venv venv                    # Create virtual env (once)
-source venv/bin/activate               # Activate (Mac/Linux)
-pip install -r requirements.txt         # Install deps (once)
-python -m uvicorn main:app --reload    # Start dev server (localhost:8000)
-pytest                                  # Run tests
+uv venv                                # Create virtual env (once)
+uv pip install -r requirements.txt     # Install deps (once)
+uv run python main.py                  # Start dev server (localhost:8000)
+uv run pytest                          # Run tests
 ```
 
 ### View API Docs (Backend)

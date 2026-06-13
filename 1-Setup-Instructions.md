@@ -87,22 +87,26 @@ npm run dev
 cd calculus-explainer/backend
 ```
 
-### **Step 2: Create a Python virtual environment**
-```bash
-# On Mac/Linux:
-python3 -m venv venv
-source venv/bin/activate
+### **Step 2: Install uv (Python package manager)**
 
-# On Windows:
-python -m venv venv
-venv\Scripts\activate
+**uv** is a fast, modern replacement for `pip` and `venv`. Install it once:
+
+```bash
+# macOS / Linux:
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows (PowerShell):
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-**You should see `(venv)` in your terminal prompt now.**
+Restart your terminal, then check it works: `uv --version`
+
+> uv is written in Rust and installs packages 10–100× faster than pip. It manages virtual environments automatically — no need to think about activating them.
 
 ### **Step 3: Install Python dependencies**
 ```bash
-pip install -r requirements.txt
+uv venv
+uv pip install -r requirements.txt
 # This installs: fastapi, uvicorn, numpy, sympy, anthropic
 ```
 
@@ -119,7 +123,7 @@ echo "CLAUDE_API_KEY=sk-ant-xxxxx" >> .env
 
 ### **Step 5: Start the backend server**
 ```bash
-python -m uvicorn main:app --reload
+uv run python main.py
 # You should see: "Uvicorn running on http://127.0.0.1:8000"
 ```
 
@@ -222,7 +226,7 @@ npm run dev
 python3 --version  # Should be 3.9+
 
 # Reinstall dependencies
-pip install --upgrade -r requirements.txt
+uv pip install -r requirements.txt
 
 # Check if port 8000 is in use
 lsof -i :8000  # Kill the process if needed

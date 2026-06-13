@@ -95,10 +95,9 @@ npm run dev          # http://localhost:5173
 
 # Backend (new terminal)
 cd backend
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-python -m uvicorn main:app --reload  # http://localhost:8000
+uv venv
+uv pip install -r requirements.txt
+uv run python main.py  # http://localhost:8000
 
 # Test API docs
 open http://localhost:8000/docs
