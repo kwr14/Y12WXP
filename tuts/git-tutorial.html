@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Git for Beginners</title>
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --card: #242424;
+      --border: #333;
+      --accent: #f05032;
+      --accent2: #4ec9b0;
+      --accent3: #c586c0;
+      --text: #e8e8e8;
+      --muted: #888;
+      --success: #4caf50;
+      --warn: #ff9800;
+      --code-bg: #0d1117;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .nav-logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+      padding: 1rem 0;
+      margin-right: auto;
+    }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      padding: 0.4rem 0.7rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    nav a:hover { color: var(--text); background: var(--card); }
+
+    /* ─── HERO ─── */
+    .hero {
+      background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 60%, #1a0a0a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 4rem 2rem 3rem;
+      text-align: center;
+    }
+    .hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+    .hero h1 span { color: var(--accent); }
+    .hero p { color: var(--muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem; }
+    .badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .hero-badges { display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap; }
+    .badge.green { background: #2e7d32; }
+    .badge.blue { background: #1565c0; }
+
+    /* ─── LAYOUT ─── */
+    .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+
+    /* ─── SECTIONS ─── */
+    section { margin-bottom: 4rem; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-icon {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .section-header h2 { font-size: 1.6rem; }
+
+    /* ─── CONCEPT CARDS ─── */
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .concept-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.2rem;
+      transition: border-color 0.2s;
+    }
+    .concept-card:hover { border-color: var(--accent); }
+    .concept-card h3 {
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .concept-card p { font-size: 0.9rem; color: var(--muted); }
+
+    /* ─── CODE ─── */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.2rem 1.4rem;
+      overflow-x: auto;
+      font-family: 'Consolas', 'Fira Code', monospace;
+      font-size: 0.88rem;
+      line-height: 1.8;
+      margin: 0.8rem 0;
+    }
+    .cmd { color: #79c0ff; }
+    .comment { color: #6e7681; }
+    .out { color: var(--accent2); }
+    code {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1em 0.4em;
+      font-family: 'Consolas', monospace;
+      font-size: 0.87em;
+      color: var(--accent2);
+    }
+
+    /* ─── EXERCISES ─── */
+    .exercise {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent2);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .exercise-header {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 1rem;
+    }
+    .exercise-num {
+      background: var(--accent2);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+    }
+    .exercise h3 { font-size: 1.05rem; }
+    .exercise p { color: var(--muted); margin-bottom: 0.8rem; font-size: 0.95rem; }
+    .steps { list-style: none; counter-reset: step; }
+    .steps li {
+      counter-increment: step;
+      padding: 0.5rem 0 0.5rem 2.2rem;
+      position: relative;
+      font-size: 0.92rem;
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0.5rem;
+      width: 1.4rem; height: 1.4rem;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ─── QUIZ ─── */
+    .quiz-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .quiz-card .question {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    .quiz-card .question span { color: var(--accent3); margin-right: 0.4rem; }
+    .options { display: flex; flex-direction: column; gap: 0.5rem; }
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      cursor: pointer;
+      padding: 0.7rem 1rem;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      transition: all 0.15s;
+      font-size: 0.92rem;
+    }
+    .option:hover { border-color: var(--accent3); background: #1e1e2e; }
+    .option input[type="radio"] { margin-top: 0.1rem; accent-color: var(--accent3); }
+    .option.correct { border-color: var(--success) !important; background: #1a2e1a; }
+    .option.wrong { border-color: #c62828 !important; background: #2e1a1a; }
+    .check-btn {
+      margin-top: 1rem;
+      background: var(--accent3);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 0.6rem 1.4rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .check-btn:hover { opacity: 0.85; }
+    .feedback {
+      margin-top: 0.8rem;
+      padding: 0.7rem 1rem;
+      border-radius: 7px;
+      font-size: 0.88rem;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.correct { background: #1a2e1a; color: #81c784; border: 1px solid #388e3c; }
+    .feedback.wrong { background: #2e1a1a; color: #ef9a9a; border: 1px solid #c62828; }
+
+    /* ─── SUMMARY ─── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.8rem;
+    }
+    .summary-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.88rem;
+    }
+    .summary-item .label {
+      font-family: 'Consolas', monospace;
+      color: var(--accent);
+      font-weight: 700;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .summary-item p { color: var(--muted); }
+
+    /* ─── PROGRESS BAR ─── */
+    .progress-wrap { background: var(--surface); padding: 1rem 2rem; border-bottom: 1px solid var(--border); }
+    .progress-label { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.4rem; }
+    .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0%; background: var(--accent); border-radius: 3px; transition: width 0.4s ease; }
+
+    /* ─── CALLOUT ─── */
+    .callout {
+      background: #1a1500;
+      border: 1px solid #5a4000;
+      border-left: 4px solid var(--warn);
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+      color: #ffcc80;
+    }
+    .callout strong { color: var(--warn); }
+
+    /* ─── CHEAT SHEET TABLE ─── */
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th {
+      background: var(--surface);
+      color: var(--muted);
+      text-align: left;
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+    td { padding: 0.7rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--card); }
+    td:first-child { font-family: 'Consolas', monospace; color: var(--accent2); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 2rem; }
+      nav { gap: 0.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">⎇ Git 101</div>
+  <a href="#concepts">Concepts</a>
+  <a href="#exercises">Exercises</a>
+  <a href="#quiz">Quiz</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+  <a href="#summary">Summary</a>
+</nav>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-label">Quiz progress: <span id="progress-text">0 / 7 answered</span></div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Learn <span>Git</span> from Scratch</h1>
+  <p>Git is the world's most popular version control system. Master it and you'll never lose your work again.</p>
+  <div class="hero-badges">
+    <span class="badge">Beginner friendly</span>
+    <span class="badge green">Hands-on exercises</span>
+    <span class="badge blue">Interactive quiz</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ─── SECTION 1: CONCEPTS ─── -->
+  <section id="concepts">
+    <div class="section-header">
+      <div class="section-icon">💡</div>
+      <h2>Core Concepts</h2>
+    </div>
+
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3>📦 Repository (repo)</h3>
+        <p>A folder that Git tracks. It stores your project files <em>and</em> the entire history of every change ever made.</p>
+      </div>
+      <div class="concept-card">
+        <h3>📸 Commit</h3>
+        <p>A saved snapshot of your files at a specific point in time. Think of it as a <em>save game</em> you can always return to.</p>
+      </div>
+      <div class="concept-card">
+        <h3>🌿 Branch</h3>
+        <p>A separate line of development. Work on a new feature in its own branch without breaking the main code.</p>
+      </div>
+      <div class="concept-card">
+        <h3>🎭 Staging Area</h3>
+        <p>A waiting room where you place changes before committing. Choose exactly <em>what</em> goes into each snapshot.</p>
+      </div>
+      <div class="concept-card">
+        <h3>🔀 Merge</h3>
+        <p>Combining two branches together. When your feature is ready, merge it back into <code>main</code>.</p>
+      </div>
+      <div class="concept-card">
+        <h3>☁️ Remote</h3>
+        <p>A copy of your repo hosted online (e.g. GitHub). Push to share your work; pull to download others'.</p>
+      </div>
+      <div class="concept-card">
+        <h3>📥 Clone</h3>
+        <p>Downloading a complete copy of a remote repository — history and all — onto your local machine.</p>
+      </div>
+      <div class="concept-card">
+        <h3>🗺️ HEAD</h3>
+        <p>A pointer to your current position in the repository — usually the latest commit on your current branch.</p>
+      </div>
+    </div>
+
+    <br>
+    <div class="section-header" style="margin-top:2rem;">
+      <div class="section-icon" style="background:var(--accent2); color:#000;">🔄</div>
+      <h2>The Git Workflow</h2>
+    </div>
+    <p style="color:var(--muted); margin-bottom:1rem;">Every day as a developer, you follow this cycle:</p>
+    <pre><span class="comment"># 1. Make changes to your files (just edit them normally)</span>
+
+<span class="comment"># 2. Check what changed</span>
+<span class="cmd">git status</span>
+
+<span class="comment"># 3. Stage the changes you want to save</span>
+<span class="cmd">git add filename.txt</span>         <span class="comment"># stage one file</span>
+<span class="cmd">git add .</span>                    <span class="comment"># stage everything</span>
+
+<span class="comment"># 4. Commit with a descriptive message</span>
+<span class="cmd">git commit -m "Add login page"</span>
+
+<span class="comment"># 5. Push to GitHub so others can see it</span>
+<span class="cmd">git push origin main</span></pre>
+
+    <div class="callout">
+      <strong>⚠️ Golden rule:</strong> Commit often and write clear messages. Future-you will be very grateful.
+    </div>
+  </section>
+
+  <!-- ─── SECTION 2: EXERCISES ─── -->
+  <section id="exercises">
+    <div class="section-header">
+      <div class="section-icon">🛠️</div>
+      <h2>Hands-On Exercises</h2>
+    </div>
+    <p style="color:var(--muted); margin-bottom:1.5rem;">Open your terminal and follow along. Each exercise builds on the last.</p>
+
+    <!-- Exercise 1 -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <span class="exercise-num">EX 1</span>
+        <h3>Create Your First Repository</h3>
+      </div>
+      <p>Start from scratch — create a folder and turn it into a Git repo.</p>
+      <ol class="steps">
+        <li>Open your terminal and navigate somewhere convenient (e.g. your Desktop).</li>
+        <li>Create a new folder and enter it:
+          <pre><span class="cmd">mkdir my-first-repo</span>
+<span class="cmd">cd my-first-repo</span></pre>
+        </li>
+        <li>Initialise Git:
+          <pre><span class="cmd">git init</span>
+<span class="out">Initialized empty Git repository in .../my-first-repo/.git/</span></pre>
+        </li>
+        <li>Create a file and write something in it:
+          <pre><span class="cmd">echo "Hello, Git!" > README.txt</span></pre>
+        </li>
+        <li>Check what Git sees:
+          <pre><span class="cmd">git status</span>
+<span class="out">Untracked files:
+  README.txt</span></pre>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Exercise 2 -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <span class="exercise-num">EX 2</span>
+        <h3>Make Your First Commit</h3>
+      </div>
+      <p>Stage your file and save a snapshot of your work.</p>
+      <ol class="steps">
+        <li>Stage the file:
+          <pre><span class="cmd">git add README.txt</span></pre>
+        </li>
+        <li>Confirm it's staged (notice it turns green in many terminals):
+          <pre><span class="cmd">git status</span>
+<span class="out">Changes to be committed:
+  new file: README.txt</span></pre>
+        </li>
+        <li>Commit it:
+          <pre><span class="cmd">git commit -m "Initial commit: add README"</span>
+<span class="out">[main (root-commit) a1b2c3d] Initial commit: add README
+ 1 file changed, 1 insertion(+)</span></pre>
+        </li>
+        <li>View the commit log:
+          <pre><span class="cmd">git log --oneline</span>
+<span class="out">a1b2c3d Initial commit: add README</span></pre>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Exercise 3 -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <span class="exercise-num">EX 3</span>
+        <h3>Create and Switch Branches</h3>
+      </div>
+      <p>Work on a new feature without touching the main branch.</p>
+      <ol class="steps">
+        <li>Create a new branch called <code>feature/greeting</code>:
+          <pre><span class="cmd">git checkout -b feature/greeting</span>
+<span class="out">Switched to a new branch 'feature/greeting'</span></pre>
+        </li>
+        <li>Edit <code>README.txt</code> — add a second line: <em>"Learning Git is fun!"</em></li>
+        <li>Commit the change:
+          <pre><span class="cmd">git add README.txt</span>
+<span class="cmd">git commit -m "Add greeting line to README"</span></pre>
+        </li>
+        <li>Switch back to <code>main</code> and notice the file is unchanged there:
+          <pre><span class="cmd">git checkout main</span>
+<span class="cmd">cat README.txt</span>
+<span class="out">Hello, Git!</span></pre>
+        </li>
+        <li>Merge your feature in:
+          <pre><span class="cmd">git merge feature/greeting</span>
+<span class="out">Updating a1b2c3d..e4f5g6h
+Fast-forward
+ README.txt | 1 +</span></pre>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Exercise 4 -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <span class="exercise-num">EX 4</span>
+        <h3>Time Travel with git diff &amp; git log</h3>
+      </div>
+      <p>Inspect what changed and when.</p>
+      <ol class="steps">
+        <li>Edit <code>README.txt</code> again — add a third line: <em>"Version control is powerful."</em> But do <strong>not</strong> commit yet.</li>
+        <li>See exactly what's different from the last commit:
+          <pre><span class="cmd">git diff</span>
+<span class="out">- Learning Git is fun!
++ Learning Git is fun!
++ Version control is powerful.</span></pre>
+        </li>
+        <li>See the full commit history with dates and authors:
+          <pre><span class="cmd">git log</span></pre>
+        </li>
+        <li>Stage and commit your new line, then try:
+          <pre><span class="cmd">git log --oneline --graph --all</span></pre>
+          This shows a visual tree of all branches and commits.
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ─── SECTION 3: QUIZ ─── -->
+  <section id="quiz">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--accent3);">❓</div>
+      <h2>Knowledge Quiz</h2>
+    </div>
+    <p style="color:var(--muted); margin-bottom:1.5rem;">Test what you've learned. Select an answer then click <strong>Check</strong>.</p>
+
+    <!-- Q1 -->
+    <div class="quiz-card" id="q1">
+      <div class="question"><span>Q1.</span> What command turns a folder into a Git repository?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q1" value="a"> git start</label>
+        <label class="option"><input type="radio" name="q1" value="b"> git init</label>
+        <label class="option"><input type="radio" name="q1" value="c"> git create</label>
+        <label class="option"><input type="radio" name="q1" value="d"> git new</label>
+      </div>
+      <button class="check-btn" onclick="check('q1','b','git init initialises a hidden .git folder that stores all version history.')">Check</button>
+      <div class="feedback" id="q1-fb"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="quiz-card" id="q2">
+      <div class="question"><span>Q2.</span> Which area holds changes you've chosen to include in the next commit?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q2" value="a"> Working directory</label>
+        <label class="option"><input type="radio" name="q2" value="b"> Remote</label>
+        <label class="option"><input type="radio" name="q2" value="c"> Staging area</label>
+        <label class="option"><input type="radio" name="q2" value="d"> Branch</label>
+      </div>
+      <button class="check-btn" onclick="check('q2','c','The staging area (also called the index) is where you curate what goes into the next commit.')">Check</button>
+      <div class="feedback" id="q2-fb"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="quiz-card" id="q3">
+      <div class="question"><span>Q3.</span> What does <code>git add .</code> do?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q3" value="a"> Creates a new commit with all changes</label>
+        <label class="option"><input type="radio" name="q3" value="b"> Stages all changed files in the current directory</label>
+        <label class="option"><input type="radio" name="q3" value="c"> Pushes changes to GitHub</label>
+        <label class="option"><input type="radio" name="q3" value="d"> Downloads the latest changes</label>
+      </div>
+      <button class="check-btn" onclick="check('q3','b','git add . stages every modified and new file in the current folder and its sub-folders.')">Check</button>
+      <div class="feedback" id="q3-fb"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="quiz-card" id="q4">
+      <div class="question"><span>Q4.</span> You want to work on a new feature without risking the main code. What should you do?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q4" value="a"> Make a copy of the entire folder manually</label>
+        <label class="option"><input type="radio" name="q4" value="b"> Delete the main branch first</label>
+        <label class="option"><input type="radio" name="q4" value="c"> Create a new branch</label>
+        <label class="option"><input type="radio" name="q4" value="d"> Commit directly to main</label>
+      </div>
+      <button class="check-btn" onclick="check('q4','c','Branches let you diverge from the main codebase safely. Use git checkout -b feature-name.')">Check</button>
+      <div class="feedback" id="q4-fb"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="quiz-card" id="q5">
+      <div class="question"><span>Q5.</span> What does <code>git log --oneline</code> show you?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q5" value="a"> A list of all remote repositories</label>
+        <label class="option"><input type="radio" name="q5" value="b"> A compact history of commits, one per line</label>
+        <label class="option"><input type="radio" name="q5" value="c"> The differences between two files</label>
+        <label class="option"><input type="radio" name="q5" value="d"> All branches in the repository</label>
+      </div>
+      <button class="check-btn" onclick="check('q5','b','git log --oneline prints each commit as a short hash + message, great for a quick overview.')">Check</button>
+      <div class="feedback" id="q5-fb"></div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="quiz-card" id="q6">
+      <div class="question"><span>Q6.</span> Which command downloads a remote repository onto your machine for the first time?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q6" value="a"> git pull</label>
+        <label class="option"><input type="radio" name="q6" value="b"> git fetch</label>
+        <label class="option"><input type="radio" name="q6" value="c"> git clone</label>
+        <label class="option"><input type="radio" name="q6" value="d"> git download</label>
+      </div>
+      <button class="check-btn" onclick="check('q6','c','git clone copies the entire repository — all commits and branches — to your local machine.')">Check</button>
+      <div class="feedback" id="q6-fb"></div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="quiz-card" id="q7">
+      <div class="question"><span>Q7.</span> What is a <em>merge conflict</em>?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q7" value="a"> When two commits have the same message</label>
+        <label class="option"><input type="radio" name="q7" value="b"> When Git can't automatically combine two branches because the same lines were changed differently</label>
+        <label class="option"><input type="radio" name="q7" value="c"> When you push to the wrong branch</label>
+        <label class="option"><input type="radio" name="q7" value="d"> When a file is too large to commit</label>
+      </div>
+      <button class="check-btn" onclick="check('q7','b','A merge conflict happens when two branches both modified the same part of a file. You must manually choose which version to keep.')">Check</button>
+      <div class="feedback" id="q7-fb"></div>
+    </div>
+
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.2rem; text-align:center; margin-top:1rem;">
+      <div style="font-size:1.2rem; font-weight:700;" id="score-display">Score: 0 / 7</div>
+      <div style="color:var(--muted); font-size:0.85rem; margin-top:0.3rem;">Answer all questions to see your final score</div>
+    </div>
+  </section>
+
+  <!-- ─── SECTION 4: CHEAT SHEET ─── -->
+  <section id="cheatsheet">
+    <div class="section-header">
+      <div class="section-icon" style="background:#1565c0;">📋</div>
+      <h2>Command Cheat Sheet</h2>
+    </div>
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden;">
+      <table>
+        <thead>
+          <tr><th>Command</th><th>What it does</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>git init</td><td>Initialise a new repository in the current folder</td></tr>
+          <tr><td>git clone &lt;url&gt;</td><td>Copy a remote repository to your machine</td></tr>
+          <tr><td>git status</td><td>Show what's changed, staged, or untracked</td></tr>
+          <tr><td>git add &lt;file&gt;</td><td>Stage a specific file for the next commit</td></tr>
+          <tr><td>git add .</td><td>Stage all changes in the current directory</td></tr>
+          <tr><td>git commit -m "msg"</td><td>Save a snapshot with a descriptive message</td></tr>
+          <tr><td>git log --oneline</td><td>View compact commit history</td></tr>
+          <tr><td>git diff</td><td>Show unstaged changes line-by-line</td></tr>
+          <tr><td>git branch</td><td>List all local branches</td></tr>
+          <tr><td>git checkout -b &lt;name&gt;</td><td>Create and switch to a new branch</td></tr>
+          <tr><td>git checkout &lt;name&gt;</td><td>Switch to an existing branch</td></tr>
+          <tr><td>git merge &lt;branch&gt;</td><td>Merge a branch into the current one</td></tr>
+          <tr><td>git push origin &lt;branch&gt;</td><td>Upload commits to the remote repository</td></tr>
+          <tr><td>git pull</td><td>Download and merge the latest remote changes</td></tr>
+          <tr><td>git stash</td><td>Temporarily shelve changes without committing</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ─── SECTION 5: SUMMARY ─── -->
+  <section id="summary">
+    <div class="section-header">
+      <div class="section-icon" style="background:#2e7d32;">✅</div>
+      <h2>Key Takeaways</h2>
+    </div>
+    <p style="color:var(--muted); margin-bottom:1.2rem;">The core ideas to lock in before you close this page:</p>
+    <div class="summary-grid">
+      <div class="summary-item">
+        <span class="label">git init</span>
+        <p>Every project starts here. One command turns any folder into a tracked repository.</p>
+      </div>
+      <div class="summary-item">
+        <span class="label">Stage → Commit</span>
+        <p>Changes are a two-step process: <code>add</code> to stage, then <code>commit</code> to save permanently.</p>
+      </div>
+      <div class="summary-item">
+        <span class="label">Branches</span>
+        <p>Always work in a branch for new features. Keep <code>main</code> clean and working.</p>
+      </div>
+      <div class="summary-item">
+        <span class="label">Commit messages</span>
+        <p>Write <em>why</em> you made the change, not just what. Future collaborators (and future-you) will thank you.</p>
+      </div>
+      <div class="summary-item">
+        <span class="label">Remote = backup</span>
+        <p>Push to GitHub regularly. Local disasters (deleted folder, crashed laptop) can't touch your remote history.</p>
+      </div>
+      <div class="summary-item">
+        <span class="label">git status</span>
+        <p>Your best friend. Run it constantly. It always tells you what to do next.</p>
+      </div>
+      <div class="summary-item">
+        <span class="label">Merge conflicts</span>
+        <p>Don't panic. Open the file, look for the <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> markers, decide what to keep, save, and commit.</p>
+      </div>
+      <div class="summary-item">
+        <span class="label">Commit often</span>
+        <p>Small, frequent commits are easier to understand, review, and undo than one giant save.</p>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top:3rem; padding:2rem; background:var(--card); border:1px solid var(--border); border-radius:12px;">
+      <div style="font-size:2rem; margin-bottom:0.5rem;">🎉</div>
+      <div style="font-size:1.2rem; font-weight:700; margin-bottom:0.5rem;">You've completed Git 101!</div>
+      <div style="color:var(--muted); font-size:0.9rem;">Next up: explore GitHub, pull requests, and working with a team.</div>
+    </div>
+  </section>
+
+</div><!-- /container -->
+
+<script>
+  const answers = {};
+  const correct = {};
+  const total = 7;
+
+  function check(qid, correctVal, explanation) {
+    const selected = document.querySelector(`input[name="${qid}"]:checked`);
+    const fb = document.getElementById(`${qid}-fb`);
+
+    if (!selected) {
+      fb.textContent = 'Please select an answer first.';
+      fb.className = 'feedback wrong show';
+      return;
+    }
+
+    const val = selected.value;
+    const options = document.querySelectorAll(`#${qid} .option`);
+
+    // Disable re-answering
+    document.querySelectorAll(`input[name="${qid}"]`).forEach(r => r.disabled = true);
+    document.querySelector(`#${qid} .check-btn`).disabled = true;
+    document.querySelector(`#${qid} .check-btn`).style.opacity = '0.4';
+
+    options.forEach(opt => {
+      const radio = opt.querySelector('input');
+      if (radio.value === correctVal) opt.classList.add('correct');
+      if (radio.value === val && val !== correctVal) opt.classList.add('wrong');
+    });
+
+    if (val === correctVal) {
+      fb.textContent = '✓ Correct! ' + explanation;
+      fb.className = 'feedback correct show';
+      correct[qid] = true;
+    } else {
+      fb.textContent = '✗ Not quite. ' + explanation;
+      fb.className = 'feedback wrong show';
+      correct[qid] = false;
+    }
+
+    answers[qid] = true;
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const answered = Object.keys(answers).length;
+    const score = Object.values(correct).filter(Boolean).length;
+
+    document.getElementById('progress-text').textContent = `${answered} / ${total} answered`;
+    document.getElementById('progress-fill').style.width = `${(answered / total) * 100}%`;
+    document.getElementById('score-display').textContent = `Score: ${score} / ${total}`;
+
+    if (answered === total) {
+      const pct = Math.round((score / total) * 100);
+      const msg = pct === 100 ? '🏆 Perfect score! You\'re ready for GitHub.' :
+                  pct >= 70  ? '👍 Great work! Review the ones you missed.' :
+                               '📖 Keep practising — re-read the concepts section.';
+      document.getElementById('score-display').textContent += `  (${pct}%) — ${msg}`;
+    }
+  }
+</script>
+
+</body>
+</html>
