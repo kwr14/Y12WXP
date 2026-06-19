@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maths for LLMs — Interactive</title>
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --card: #242424;
+      --border: #333;
+      --accent: #a78bfa;
+      --accent2: #4ec9b0;
+      --accent3: #f59e0b;
+      --text: #e8e8e8;
+      --muted: #888;
+      --success: #4caf50;
+      --warn: #ff9800;
+      --code-bg: #0d1117;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .nav-logo { font-size: 1.4rem; font-weight: 700; color: var(--accent); padding: 1rem 0; margin-right: auto; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 0.85rem; padding: 0.4rem 0.7rem; border-radius: 6px; transition: all 0.2s; }
+    nav a:hover { color: var(--text); background: var(--card); }
+
+    .hero { background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 60%, #1a0a2a 100%); border-bottom: 1px solid var(--border); padding: 4rem 2rem 3rem; text-align: center; }
+    .hero h1 { font-size: 2.8rem; font-weight: 800; margin-bottom: 1rem; }
+    .hero h1 span { color: var(--accent); }
+    .hero p { color: var(--muted); font-size: 1.1rem; max-width: 640px; margin: 0 auto 2rem; }
+    .badge { display: inline-block; background: var(--accent); color: #0f0f0f; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 20px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .hero-badges { display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap; }
+    .badge.green { background: var(--success); color: #fff; }
+    .badge.teal { background: var(--accent2); color: #0f0f0f; }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+
+    .progress-sticky { position: sticky; top: 56px; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.6rem 1rem; z-index: 90; }
+    .progress-bar { height: 6px; background: var(--card); border-radius: 3px; overflow: hidden; }
+    #progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.4s; }
+    #score-display { color: var(--muted); font-size: 0.85rem; margin-top: 0.4rem; text-align: center; }
+
+    section { margin-bottom: 4rem; }
+    .section-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+    .section-icon { font-size: 1.6rem; }
+    .section-header h2 { font-size: 1.7rem; }
+    .section-header .num { color: var(--accent); font-weight: 800; }
+    section p { margin-bottom: 1rem; color: var(--text); }
+    section p.muted { color: var(--muted); font-size: 0.95rem; }
+
+    .lesson-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .lesson-card h3 { color: var(--accent); margin-bottom: 0.8rem; font-size: 1.15rem; }
+    .lesson-card .intuition { background: rgba(167,139,250,0.08); border-left: 3px solid var(--accent); padding: 0.7rem 1rem; margin: 1rem 0; border-radius: 4px; font-size: 0.95rem; }
+    .lesson-card .llm-link { background: rgba(78,201,176,0.08); border-left: 3px solid var(--accent2); padding: 0.7rem 1rem; margin: 1rem 0; border-radius: 4px; font-size: 0.95rem; }
+    .lesson-card .llm-link strong { color: var(--accent2); }
+
+    .widget { background: var(--surface); border-radius: 8px; padding: 1rem; margin: 1rem 0; text-align: center; }
+    .widget svg { max-width: 100%; display: block; margin: 0 auto; touch-action: none; user-select: none; }
+    .widget .readout { margin-top: 0.6rem; font-family: 'SF Mono', 'Consolas', monospace; color: var(--accent); font-size: 1rem; }
+    .widget .controls { display: flex; gap: 0.8rem; justify-content: center; align-items: center; margin-top: 0.6rem; flex-wrap: wrap; font-size: 0.9rem; color: var(--muted); }
+    .widget input[type="range"] { accent-color: var(--accent); }
+    .widget button { background: var(--accent); color: #0f0f0f; border: 0; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    .widget button:hover { filter: brightness(1.1); }
+    .widget button.secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+    .widget .grid-bg line { stroke: #2a2a2a; stroke-width: 1; }
+    .widget .axis { stroke: #555; stroke-width: 1.2; }
+    .widget .v-arrow { stroke-width: 3; fill: none; }
+    .widget .handle { cursor: grab; fill: var(--accent); stroke: #fff; stroke-width: 2; }
+    .widget .handle.alt { fill: var(--accent2); }
+    .widget .handle:active { cursor: grabbing; }
+    .widget .ghost { stroke: var(--muted); stroke-dasharray: 4 3; stroke-width: 1.5; fill: none; }
+    .widget .label { fill: var(--text); font-size: 13px; font-family: 'SF Mono', 'Consolas', monospace; pointer-events: none; }
+
+    .check { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; margin-top: 1.2rem; }
+    .check .q { font-weight: 600; margin-bottom: 0.8rem; color: var(--text); }
+    .check .options { display: flex; flex-direction: column; gap: 0.5rem; }
+    .check label { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.8rem; background: var(--card); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: background 0.15s; }
+    .check label:hover { background: #2c2c2c; }
+    .check input[type="radio"]:disabled + span { opacity: 0.7; }
+    .check label.correct { border-color: var(--success); background: rgba(76,175,80,0.12); }
+    .check label.wrong { border-color: #e57373; background: rgba(229,115,115,0.12); }
+    .check .feedback { margin-top: 0.8rem; font-size: 0.9rem; color: var(--muted); min-height: 1.2em; }
+    .check .feedback.ok { color: var(--success); }
+    .check .feedback.bad { color: #e57373; }
+
+    code, .mono { font-family: 'SF Mono', 'Consolas', monospace; background: var(--code-bg); padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; color: var(--accent2); }
+    .formula { background: var(--code-bg); padding: 0.8rem 1rem; border-radius: 6px; text-align: center; font-family: 'SF Mono', 'Consolas', monospace; font-size: 1.05rem; color: var(--accent); margin: 0.8rem 0; }
+
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+    .summary-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+    .summary-card h4 { color: var(--accent2); margin-bottom: 0.4rem; font-size: 0.95rem; }
+    .summary-card p { font-size: 0.9rem; color: var(--muted); }
+
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-logo">∑ Maths for LLMs</div>
+    <a href="#intro">Intro</a>
+    <a href="#vectors">Vectors</a>
+    <a href="#dot">Dot product</a>
+    <a href="#matrix">Matrices</a>
+    <a href="#deriv">Derivatives</a>
+    <a href="#gd">Gradient descent</a>
+    <a href="#llm">Putting it together</a>
+  </nav>
+
+  <header class="hero">
+    <h1>The maths behind <span>LLMs</span></h1>
+    <p>Just enough linear algebra and calculus to understand how language models actually work — built one interactive idea at a time.</p>
+    <div class="hero-badges">
+      <span class="badge">Interactive</span>
+      <span class="badge teal">No install</span>
+      <span class="badge green">~30 min</span>
+    </div>
+  </header>
+
+  <div class="progress-sticky">
+    <div class="progress-bar"><div id="progress-fill"></div></div>
+    <div id="score-display">0 / 6 checks complete</div>
+  </div>
+
+  <div class="container">
+    <section id="intro">
+      <div class="section-header"><span class="section-icon">🎯</span><h2><span class="num">0.</span> Why bother?</h2></div>
+      <p>An LLM — the thing powering modern AI coding agents like Auggie — is, at its heart, a giant pile of numbers that does two things over and over:</p>
+      <ol style="margin: 0.5rem 0 1rem 1.5rem; color: var(--text);">
+        <li>Multiplies vectors by matrices.</li>
+        <li>Compares vectors using dot products.</li>
+      </ol>
+      <p>It learns by following gradients downhill. That's it. By the end of this page you'll understand all four pieces — and you'll have built and dragged them with your own hands.</p>
+      <p class="muted">You don't need any prior maths beyond "I know what an x-y graph is." We'll build everything else.</p>
+    </section>
+
+    <section id="vectors">
+      <div class="section-header"><span class="section-icon">➡️</span><h2><span class="num">1.</span> Vectors: numbers with direction</h2></div>
+      <div class="lesson-card">
+        <h3>A vector is just a list of numbers</h3>
+        <p>In 2D, the vector <span class="mono">v = (3, 2)</span> means "go 3 right and 2 up." Drag the purple dot below to change <strong>v</strong>.</p>
+
+        <div class="widget" id="w-vector">
+          <svg viewBox="0 0 360 260" width="360" height="260" aria-label="Draggable vector">
+            <g class="grid-bg" id="grid-1"></g>
+            <line class="axis" x1="20" y1="130" x2="340" y2="130"/>
+            <line class="axis" x1="180" y1="20" x2="180" y2="240"/>
+            <line id="v1-line" class="v-arrow" stroke="#a78bfa" x1="180" y1="130" x2="260" y2="80" marker-end="url(#arr-purple)"/>
+            <circle id="v1-handle" class="handle" cx="260" cy="80" r="9"/>
+            <defs>
+              <marker id="arr-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#a78bfa"/>
+              </marker>
+            </defs>
+          </svg>
+          <div class="readout" id="v1-readout">v = (3, 2) &nbsp;·&nbsp; |v| = 3.61</div>
+        </div>
+
+        <div class="intuition">💡 <strong>Magnitude</strong> <span class="mono">|v| = √(x² + y²)</span> is the length of the arrow — Pythagoras applied to the vector's components.</div>
+        <div class="llm-link"><strong>In an LLM:</strong> every word becomes a vector — but with ~4,000 components instead of 2. Words with similar meaning end up at similar positions in that 4,000-dimensional space.</div>
+
+        <div class="check" data-check="1">
+          <div class="q">If a word's embedding is <span class="mono">(0, 0, ..., 0)</span>, what is its magnitude?</div>
+          <div class="options">
+            <label><input type="radio" name="q1" value="a"/><span>1 — every vector has length 1</span></label>
+            <label><input type="radio" name="q1" value="b" data-correct="true"/><span>0 — it has no length at all</span></label>
+            <label><input type="radio" name="q1" value="c"/><span>It's undefined</span></label>
+          </div>
+          <div class="feedback"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="dot">
+      <div class="section-header"><span class="section-icon">🔗</span><h2><span class="num">2.</span> The dot product: how similar are two vectors?</h2></div>
+      <div class="lesson-card">
+        <h3>Multiply matching components, then add</h3>
+        <div class="formula">v · w = v<sub>x</sub>·w<sub>x</sub> + v<sub>y</sub>·w<sub>y</sub></div>
+        <p>The dot product is one number that tells you how <em>aligned</em> two vectors are. Drag both arrows below and watch the value change:</p>
+
+        <div class="widget" id="w-dot">
+          <svg viewBox="0 0 360 260" width="360" height="260" aria-label="Two draggable vectors with live dot product">
+            <g class="grid-bg" id="grid-2"></g>
+            <line class="axis" x1="20" y1="130" x2="340" y2="130"/>
+            <line class="axis" x1="180" y1="20" x2="180" y2="240"/>
+            <line id="d-v" class="v-arrow" stroke="#a78bfa" x1="180" y1="130" x2="260" y2="80" marker-end="url(#arr-purple-2)"/>
+            <line id="d-w" class="v-arrow" stroke="#4ec9b0" x1="180" y1="130" x2="240" y2="180" marker-end="url(#arr-teal)"/>
+            <circle id="d-vh" class="handle" cx="260" cy="80" r="9"/>
+            <circle id="d-wh" class="handle alt" cx="240" cy="180" r="9"/>
+            <defs>
+              <marker id="arr-purple-2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#a78bfa"/></marker>
+              <marker id="arr-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4ec9b0"/></marker>
+            </defs>
+          </svg>
+          <div class="readout" id="d-readout">v · w = ?</div>
+          <div class="controls">try: line them up &nbsp;·&nbsp; make them perpendicular &nbsp;·&nbsp; point them apart</div>
+        </div>
+
+        <div class="intuition">💡 <strong>Same direction</strong> → big positive number. <strong>Perpendicular</strong> → exactly 0. <strong>Opposite</strong> → negative.</div>
+        <div class="llm-link"><strong>In an LLM:</strong> "attention" is literally the dot product between a word's <em>query</em> vector and every other word's <em>key</em> vector. Bigger dot product = more attention paid to that word.</div>
+
+        <div class="check" data-check="2">
+          <div class="q">Two word-embeddings give a dot product of 0. What does that suggest about the words?</div>
+          <div class="options">
+            <label><input type="radio" name="q2" value="a"/><span>They mean the same thing</span></label>
+            <label><input type="radio" name="q2" value="b"/><span>They are opposites</span></label>
+            <label><input type="radio" name="q2" value="c" data-correct="true"/><span>They are unrelated (perpendicular in meaning-space)</span></label>
+          </div>
+          <div class="feedback"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="matrix">
+      <div class="section-header"><span class="section-icon">⬛</span><h2><span class="num">3.</span> Matrices: vectors going through a machine</h2></div>
+      <div class="lesson-card">
+        <h3>A matrix transforms space</h3>
+        <p>A 2×2 matrix takes any 2D vector and spits out a new 2D vector. The four numbers control how the grid stretches, squashes, or rotates. Slide them around — the orange square shows where the original unit square ends up.</p>
+
+        <div class="widget" id="w-matrix">
+          <svg viewBox="0 0 360 280" width="360" height="280" aria-label="Matrix transformation of a unit square">
+            <g class="grid-bg" id="grid-3"></g>
+            <line class="axis" x1="20" y1="150" x2="340" y2="150"/>
+            <line class="axis" x1="180" y1="30" x2="180" y2="270"/>
+            <polygon id="m-orig" points="180,150 240,150 240,90 180,90" fill="rgba(136,136,136,0.15)" stroke="#666" stroke-dasharray="4 3"/>
+            <polygon id="m-warped" points="180,150 240,150 240,90 180,90" fill="rgba(245,158,11,0.25)" stroke="#f59e0b" stroke-width="2"/>
+          </svg>
+          <div class="controls">
+            <span>a: <input type="range" id="m-a" min="-2" max="2" step="0.1" value="1"/> <span id="m-a-v" class="mono">1.0</span></span>
+            <span>b: <input type="range" id="m-b" min="-2" max="2" step="0.1" value="0"/> <span id="m-b-v" class="mono">0.0</span></span>
+          </div>
+          <div class="controls">
+            <span>c: <input type="range" id="m-c" min="-2" max="2" step="0.1" value="0"/> <span id="m-c-v" class="mono">0.0</span></span>
+            <span>d: <input type="range" id="m-d" min="-2" max="2" step="0.1" value="1"/> <span id="m-d-v" class="mono">1.0</span></span>
+          </div>
+          <div class="readout">M = [[a, b], [c, d]] · v</div>
+        </div>
+
+        <div class="intuition">💡 Try setting M to <span class="mono">[[0,-1],[1,0]]</span> — that's a 90° rotation. Or <span class="mono">[[2,0],[0,2]]</span> — that scales everything by 2.</div>
+        <div class="llm-link"><strong>In an LLM:</strong> every layer is a stack of matrix multiplies. The "weights" you keep hearing about are literally the numbers inside those matrices. Training = adjusting those numbers until the model gets good at predicting the next word.</div>
+
+        <div class="check" data-check="3">
+          <div class="q">If you set the matrix to <span class="mono">[[1,0],[0,1]]</span> (the identity), what happens to a vector going through it?</div>
+          <div class="options">
+            <label><input type="radio" name="q3" value="a"/><span>It gets flipped upside down</span></label>
+            <label><input type="radio" name="q3" value="b" data-correct="true"/><span>Nothing — it comes out unchanged</span></label>
+            <label><input type="radio" name="q3" value="c"/><span>It gets scaled to length 1</span></label>
+          </div>
+          <div class="feedback"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="deriv">
+      <div class="section-header"><span class="section-icon">📈</span><h2><span class="num">4.</span> Derivatives: which way is downhill?</h2></div>
+      <div class="lesson-card">
+        <h3>The slope at a point</h3>
+        <p>For a curve <span class="mono">y = x²</span>, the derivative <span class="mono">dy/dx = 2x</span> gives the slope at any point <em>x</em>. Drag the dot along the curve and watch the tangent line tilt:</p>
+
+        <div class="widget" id="w-deriv">
+          <svg viewBox="0 0 360 260" width="360" height="260" aria-label="Parabola with draggable tangent line">
+            <g class="grid-bg" id="grid-4"></g>
+            <line class="axis" x1="20" y1="220" x2="340" y2="220"/>
+            <line class="axis" x1="180" y1="20" x2="180" y2="240"/>
+            <path id="parabola" stroke="#a78bfa" stroke-width="2.5" fill="none" d=""/>
+            <line id="tangent" stroke="#f59e0b" stroke-width="2.5" x1="0" y1="0" x2="0" y2="0"/>
+            <circle id="dv-handle" class="handle" cx="220" cy="180" r="9"/>
+          </svg>
+          <div class="readout" id="dv-readout">x = 1.0 &nbsp;·&nbsp; y = 1.00 &nbsp;·&nbsp; slope = 2.0</div>
+        </div>
+
+        <div class="intuition">💡 <strong>Positive slope</strong> means the curve is going up as x increases. <strong>Negative slope</strong> means going down. <strong>Zero slope</strong> means flat — a peak or a valley.</div>
+        <div class="llm-link"><strong>In an LLM:</strong> training measures how wrong the model is (the "loss"). The derivative of the loss with respect to each weight tells you which way to nudge it to get less wrong.</div>
+
+        <div class="check" data-check="4">
+          <div class="q">At the bottom of the parabola (x = 0), what is the slope?</div>
+          <div class="options">
+            <label><input type="radio" name="q4" value="a"/><span>1</span></label>
+            <label><input type="radio" name="q4" value="b" data-correct="true"/><span>0 — it's the flat lowest point</span></label>
+            <label><input type="radio" name="q4" value="c"/><span>It's undefined at the bottom</span></label>
+          </div>
+          <div class="feedback"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="gd">
+      <div class="section-header"><span class="section-icon">⛷️</span><h2><span class="num">5.</span> Gradient descent: rolling downhill on purpose</h2></div>
+      <div class="lesson-card">
+        <h3>Take a small step opposite the slope</h3>
+        <div class="formula">x<sub>new</sub> = x<sub>old</sub> − η · slope</div>
+        <p>η ("eta") is the <strong>learning rate</strong>. Press <em>Step</em> to take one step of gradient descent. Try changing the learning rate — too big and you'll overshoot; too small and you'll crawl.</p>
+
+        <div class="widget" id="w-gd">
+          <svg viewBox="0 0 360 260" width="360" height="260" aria-label="Gradient descent on a parabola">
+            <g class="grid-bg" id="grid-5"></g>
+            <line class="axis" x1="20" y1="220" x2="340" y2="220"/>
+            <line class="axis" x1="180" y1="20" x2="180" y2="240"/>
+            <path id="gd-curve" stroke="#a78bfa" stroke-width="2.5" fill="none" d=""/>
+            <path id="gd-trail" stroke="#f59e0b" stroke-width="2" fill="none" opacity="0.6" d=""/>
+            <circle id="gd-ball" cx="280" cy="80" r="9" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+          </svg>
+          <div class="controls">
+            <span>η: <input type="range" id="gd-lr" min="0.05" max="1.2" step="0.05" value="0.3"/> <span id="gd-lr-v" class="mono">0.30</span></span>
+            <button id="gd-step">Step</button>
+            <button id="gd-reset" class="secondary">Reset</button>
+          </div>
+          <div class="readout" id="gd-readout">x = 2.50 &nbsp;·&nbsp; loss = 6.25 &nbsp;·&nbsp; step 0</div>
+        </div>
+
+        <div class="intuition">💡 The "loss landscape" of a real LLM has billions of dimensions — but the idea is identical: nudge each weight a tiny bit opposite its gradient, repeat trillions of times.</div>
+
+        <div class="check" data-check="5">
+          <div class="q">What happens with a learning rate that's way too big?</div>
+          <div class="options">
+            <label><input type="radio" name="q5" value="a"/><span>It converges faster — always good</span></label>
+            <label><input type="radio" name="q5" value="b" data-correct="true"/><span>It overshoots the minimum, possibly bouncing or diverging</span></label>
+            <label><input type="radio" name="q5" value="c"/><span>It freezes the model — no learning at all</span></label>
+          </div>
+          <div class="feedback"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="llm">
+      <div class="section-header"><span class="section-icon">🤖</span><h2><span class="num">6.</span> Putting it together: how an LLM thinks</h2></div>
+      <div class="lesson-card">
+        <h3>Every prompt you type follows this chain</h3>
+        <ol style="margin: 0.5rem 0 1rem 1.4rem; color: var(--text);">
+          <li><strong>Token → vector</strong>. Each word/sub-word becomes an embedding vector (Lesson 1).</li>
+          <li><strong>Matrix multiply</strong>. The model projects that vector into "query", "key", and "value" vectors using learned matrices (Lesson 3).</li>
+          <li><strong>Dot product</strong>. Each token compares its query against every other token's key — that's attention (Lesson 2).</li>
+          <li><strong>More matrices</strong>. The result is mashed through dozens of further matrix multiplies and nonlinearities to produce the next-token guess.</li>
+          <li><strong>Loss + gradient</strong>. During training, the model measures how wrong it was and uses derivatives (Lesson 4) to compute a gradient.</li>
+          <li><strong>Step downhill</strong>. Every weight in every matrix gets nudged opposite its gradient (Lesson 5). Repeat — billions of times — and you have a language model.</li>
+        </ol>
+        <div class="llm-link"><strong>That's it.</strong> The only "magic" is scale: more parameters, more data, more steps. The maths underneath is what you just dragged around.</div>
+
+        <div class="check" data-check="6">
+          <div class="q">Which of these is NOT one of the core mathematical operations inside an LLM?</div>
+          <div class="options">
+            <label><input type="radio" name="q6" value="a"/><span>Dot products between vectors</span></label>
+            <label><input type="radio" name="q6" value="b"/><span>Matrix multiplication</span></label>
+            <label><input type="radio" name="q6" value="c" data-correct="true"/><span>Long division of polynomials</span></label>
+            <label><input type="radio" name="q6" value="d"/><span>Gradient descent</span></label>
+          </div>
+          <div class="feedback"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="summary">
+      <div class="section-header"><span class="section-icon">📋</span><h2>Cheat sheet</h2></div>
+      <div class="summary-grid">
+        <div class="summary-card"><h4>Vector</h4><p>List of numbers. Has direction + magnitude <span class="mono">|v|=√(Σxᵢ²)</span>.</p></div>
+        <div class="summary-card"><h4>Dot product</h4><p><span class="mono">v·w = Σvᵢwᵢ</span>. Measures alignment. Zero = perpendicular.</p></div>
+        <div class="summary-card"><h4>Matrix</h4><p>A grid of numbers that transforms vectors. Layers of an LLM are matrices.</p></div>
+        <div class="summary-card"><h4>Derivative</h4><p>Slope of a function. Tells you which way is "up" — so −slope is "down."</p></div>
+        <div class="summary-card"><h4>Gradient descent</h4><p><span class="mono">x ← x − η·∇L</span>. Repeat until loss is small. That's "training."</p></div>
+        <div class="summary-card"><h4>Attention</h4><p>Dot products of queries vs keys, scaled and softmaxed, used to weight values.</p></div>
+      </div>
+    </section>
+  </div>
+
+  <footer>Self-paced · Built for the Work Experience programme · No data leaves your browser</footer>
+
+  <script>
+    const PX = 30;                 // pixels per math-unit
+    const CX = 180, CY = 130;      // origin for vector/dot widgets
+    const CY_BASE = 220, YD = 22;  // origin-y & y-scale for parabola/gd widgets
+
+    function drawGrid(gid, w, h, cx, cy, step) {
+      const g = document.getElementById(gid);
+      if (!g) return;
+      let s = '';
+      for (let x = cx % step; x < w; x += step) s += `<line x1="${x}" y1="0" x2="${x}" y2="${h}"/>`;
+      for (let y = cy % step; y < h; y += step) s += `<line x1="0" y1="${y}" x2="${w}" y2="${y}"/>`;
+      g.innerHTML = s;
+    }
+    function svgPt(svg, e) {
+      const p = svg.createSVGPoint();
+      p.x = e.clientX; p.y = e.clientY;
+      return p.matrixTransform(svg.getScreenCTM().inverse());
+    }
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+    function drag(handle, onMove) {
+      let active = false;
+      const svg = handle.ownerSVGElement;
+      const start = e => { active = true; e.preventDefault(); };
+      const move = e => {
+        if (!active) return;
+        const ev = e.touches ? e.touches[0] : e;
+        const p = svgPt(svg, ev);
+        onMove(p.x, p.y);
+        if (e.touches) e.preventDefault();
+      };
+      const end = () => { active = false; };
+      handle.addEventListener('mousedown', start);
+      handle.addEventListener('touchstart', start, { passive: false });
+      window.addEventListener('mousemove', move);
+      window.addEventListener('touchmove', move, { passive: false });
+      window.addEventListener('mouseup', end);
+      window.addEventListener('touchend', end);
+    }
+
+    // ── Lesson 1: vector ──
+    (function () {
+      drawGrid('grid-1', 360, 260, CX, CY, PX);
+      const h = document.getElementById('v1-handle');
+      const l = document.getElementById('v1-line');
+      const r = document.getElementById('v1-readout');
+      function up(cx, cy) {
+        cx = clamp(cx, 30, 330); cy = clamp(cy, 25, 235);
+        h.setAttribute('cx', cx); h.setAttribute('cy', cy);
+        l.setAttribute('x2', cx); l.setAttribute('y2', cy);
+        const vx = (cx - CX) / PX, vy = (CY - cy) / PX;
+        r.textContent = `v = (${vx.toFixed(1)}, ${vy.toFixed(1)})  ·  |v| = ${Math.hypot(vx, vy).toFixed(2)}`;
+      }
+      drag(h, up); up(+h.getAttribute('cx'), +h.getAttribute('cy'));
+    })();
+
+    // ── Lesson 2: dot product ──
+    (function () {
+      drawGrid('grid-2', 360, 260, CX, CY, PX);
+      const vh = document.getElementById('d-vh'), wh = document.getElementById('d-wh');
+      const vl = document.getElementById('d-v'), wl = document.getElementById('d-w');
+      const r = document.getElementById('d-readout');
+      function calc() {
+        const vx = (+vh.getAttribute('cx') - CX) / PX, vy = (CY - +vh.getAttribute('cy')) / PX;
+        const wx = (+wh.getAttribute('cx') - CX) / PX, wy = (CY - +wh.getAttribute('cy')) / PX;
+        const dot = vx * wx + vy * wy;
+        r.textContent = `v=(${vx.toFixed(1)}, ${vy.toFixed(1)})  ·  w=(${wx.toFixed(1)}, ${wy.toFixed(1)})  ·  v·w = ${dot.toFixed(2)}`;
+      }
+      function mk(handle, line) {
+        return (cx, cy) => {
+          cx = clamp(cx, 30, 330); cy = clamp(cy, 25, 235);
+          handle.setAttribute('cx', cx); handle.setAttribute('cy', cy);
+          line.setAttribute('x2', cx); line.setAttribute('y2', cy);
+          calc();
+        };
+      }
+      drag(vh, mk(vh, vl)); drag(wh, mk(wh, wl)); calc();
+    })();
+
+    // ── Lesson 3: matrix transform ──
+    (function () {
+      drawGrid('grid-3', 360, 280, CX, 150, PX);
+      const sIds = ['m-a','m-b','m-c','m-d'], vIds = ['m-a-v','m-b-v','m-c-v','m-d-v'];
+      const s = sIds.map(id => document.getElementById(id));
+      const v = vIds.map(id => document.getElementById(id));
+      const warped = document.getElementById('m-warped');
+      const corners = [[0,0],[1,0],[1,1],[0,1]];
+      function update() {
+        const [a,b,c,d] = s.map(x => parseFloat(x.value));
+        s.forEach((x,i) => v[i].textContent = parseFloat(x.value).toFixed(1));
+        const pts = corners.map(([x,y]) => {
+          const tx = a*x + b*y, ty = c*x + d*y;
+          return `${(CX + tx * PX).toFixed(1)},${(150 - ty * PX).toFixed(1)}`;
+        }).join(' ');
+        warped.setAttribute('points', pts);
+      }
+      s.forEach(x => x.addEventListener('input', update)); update();
+    })();
+
+    // ── Lesson 4: derivative on y = x² ──
+    (function () {
+      drawGrid('grid-4', 360, 260, CX, CY_BASE, PX);
+      const path = document.getElementById('parabola');
+      const tan = document.getElementById('tangent');
+      const h = document.getElementById('dv-handle');
+      const r = document.getElementById('dv-readout');
+      let d = '';
+      for (let x = -3; x <= 3.01; x += 0.1) {
+        const sx = CX + x * PX, sy = CY_BASE - (x*x) * YD;
+        d += (d ? 'L' : 'M') + ' ' + sx.toFixed(1) + ' ' + sy.toFixed(1) + ' ';
+      }
+      path.setAttribute('d', d);
+      function up(cx) {
+        const x = clamp((cx - CX) / PX, -3, 3);
+        const y = x * x, slope = 2 * x;
+        h.setAttribute('cx', CX + x * PX); h.setAttribute('cy', CY_BASE - y * YD);
+        const dx = 1.4;
+        tan.setAttribute('x1', CX + (x - dx) * PX);
+        tan.setAttribute('y1', CY_BASE - (y - slope * dx) * YD);
+        tan.setAttribute('x2', CX + (x + dx) * PX);
+        tan.setAttribute('y2', CY_BASE - (y + slope * dx) * YD);
+        r.textContent = `x = ${x.toFixed(2)}  ·  y = ${y.toFixed(2)}  ·  slope = ${slope.toFixed(2)}`;
+      }
+      drag(h, (cx) => up(cx));
+      up(+h.getAttribute('cx'));
+    })();
+
+    // ── Lesson 5: gradient descent on y = x² ──
+    (function () {
+      drawGrid('grid-5', 360, 260, CX, CY_BASE, PX);
+      const curve = document.getElementById('gd-curve');
+      const trail = document.getElementById('gd-trail');
+      const ball = document.getElementById('gd-ball');
+      const lr = document.getElementById('gd-lr'), lrV = document.getElementById('gd-lr-v');
+      const stepBtn = document.getElementById('gd-step'), resetBtn = document.getElementById('gd-reset');
+      const r = document.getElementById('gd-readout');
+      let d = '';
+      for (let x = -3; x <= 3.01; x += 0.1) {
+        d += (d ? 'L' : 'M') + ' ' + (CX + x * PX).toFixed(1) + ' ' + (CY_BASE - (x*x) * YD).toFixed(1) + ' ';
+      }
+      curve.setAttribute('d', d);
+      let x, steps, pts;
+      function render() {
+        const y = x * x;
+        ball.setAttribute('cx', CX + x * PX);
+        ball.setAttribute('cy', CY_BASE - y * YD);
+        trail.setAttribute('d', pts.map((p, i) => (i ? 'L' : 'M') + ' ' + p.sx.toFixed(1) + ' ' + p.sy.toFixed(1)).join(' '));
+        r.textContent = `x = ${x.toFixed(2)}  ·  loss = ${y.toFixed(2)}  ·  step ${steps}`;
+      }
+      function push() { pts.push({ sx: CX + x * PX, sy: CY_BASE - (x*x) * YD }); }
+      function reset() { x = 2.5; steps = 0; pts = []; push(); render(); }
+      function step() {
+        const eta = parseFloat(lr.value);
+        x = clamp(x - eta * (2 * x), -3.5, 3.5);
+        steps++; push(); render();
+      }
+      lr.addEventListener('input', () => lrV.textContent = parseFloat(lr.value).toFixed(2));
+      stepBtn.addEventListener('click', step);
+      resetBtn.addEventListener('click', reset);
+      reset();
+    })();
+
+    // ── Mini-quizzes (6 checks) ──
+    const TOTAL = 6;
+    let done = 0;
+    const fill = document.getElementById('progress-fill');
+    const score = document.getElementById('score-display');
+    document.querySelectorAll('.check').forEach(box => {
+      const fb = box.querySelector('.feedback');
+      box.querySelectorAll('input[type="radio"]').forEach(input => {
+        input.addEventListener('change', () => {
+          const ok = input.dataset.correct === 'true';
+          box.querySelectorAll('label').forEach(l => {
+            const inp = l.querySelector('input');
+            inp.disabled = true;
+            if (inp.dataset.correct === 'true') l.classList.add('correct');
+            else if (inp === input && !ok) l.classList.add('wrong');
+          });
+          fb.textContent = ok ? '✓ Correct.' : '✗ Not quite — the highlighted answer is the right one.';
+          fb.classList.add(ok ? 'ok' : 'bad');
+          if (!box.dataset.done) {
+            box.dataset.done = '1';
+            done++;
+            fill.style.width = (done / TOTAL * 100) + '%';
+            score.textContent = `${done} / ${TOTAL} checks complete`;
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

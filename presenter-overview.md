@@ -166,16 +166,20 @@ Don't sit stuck for more than 15 minutes without doing one of these.
 ```
 tuts/  — self-contained interactive tutorials
 
-  git-tutorial.html         The basics + branching + GitHub flow
-  python-tutorial.html      Variables, lists, functions, FizzBuzz
-  javascript-tutorial.html  Variables, arrays, arrow funcs, DOM
+  git-tutorial.html             The basics + branching + GitHub flow
+  python-tutorial.html          Variables, lists, functions, FizzBuzz
+  javascript-tutorial.html      Variables, arrays, arrow funcs, DOM
+  math-for-llms-tutorial.html   Vectors, dot products, matrices,
+                                derivatives & gradient descent
 
 Open any file in a browser. No install. No build.
-Concepts → Exercises → Quiz → Cheat Sheet → Summary.
+Coding tuts: Concepts → Exercises → Quiz → Cheat Sheet → Summary.
+Maths tut:   Brilliant-style — drag vectors, slide matrices, step
+             gradient descent on a loss curve.
 ```
 
 **Speaker notes:**
-"If anyone on the team feels rusty on Git, Python, or JavaScript, point them at the `tuts/` folder. Each tutorial is a single HTML file — no install, no build, just double-click to open in a browser. You get concepts up top, a few hands-on exercises, then a 7-question quiz with instant feedback and a running score. About 30–45 minutes per tutorial. Useful on Day 1 if setup finishes early, and any time later in the fortnight when someone hits a fundamentals wall."
+"If anyone feels rusty on Git, Python, or JavaScript, point them at the `tuts/` folder. Each tutorial is a single HTML file — no install, no build, just double-click to open in a browser. The three coding tutorials give concepts, exercises and a 7-question quiz with instant feedback (~30–45 min each). The fourth, `math-for-llms-tutorial.html`, is for anyone curious about how AI actually works under the hood — drag vectors, change matrices, run gradient descent step-by-step. Useful on Day 1 if setup finishes early, and any time later when someone hits a fundamentals wall."
 
 ---
 
