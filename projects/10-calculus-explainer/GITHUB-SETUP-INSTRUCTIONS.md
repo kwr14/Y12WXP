@@ -6,7 +6,7 @@
 
 ## 📋 What You Have
 
-A local Git repository at: `/Users/su/work/Y12WXP/` (or wherever you moved it)
+A local Git repository at: `/Users/su/work/WXP/` (or wherever you moved it)
 
 **Current status:**
 - ✅ 16 project files committed
@@ -23,7 +23,7 @@ A local Git repository at: `/Users/su/work/Y12WXP/` (or wherever you moved it)
 1. Go to **github.com** and sign in to your account
 2. Click **"+" → New repository**
 3. Configure:
-   - **Repository name:** `calculus-explainer` (or `Y12WXP`)
+   - **Repository name:** `calculus-explainer` (or `WXP`)
    - **Description:** "Interactive 3D web app for visualizing calculus concepts"
    - **Visibility:** Public (so students can learn from it)
    - **Initialize:** Don't check "Add README" (we already have one)
@@ -42,7 +42,7 @@ On your Mac, run these commands:
 
 ```bash
 # Navigate to your local repo
-cd /Users/su/work/Y12WXP
+cd /Users/su/work/WXP
 
 # Add the remote GitHub repository
 git remote add origin https://github.com/kwr14/calculus-explainer.git
@@ -59,7 +59,7 @@ git remote -v
 ## 🌳 Step 3: Set Up Branches
 
 ```bash
-cd /Users/su/work/Y12WXP
+cd /Users/su/work/WXP
 
 # Rename master to main (modern convention)
 git branch -m master main
@@ -94,7 +94,7 @@ git checkout main
 ## 📤 Step 4: Push to GitHub
 
 ```bash
-cd /Users/su/work/Y12WXP
+cd /Users/su/work/WXP
 
 # Push main branch with all commits
 git push -u origin main
@@ -240,7 +240,7 @@ Your project is ready to launch! 🚀
 → You already have main branch, skip the rename step
 
 **"fatal: 'origin' does not appear to be a 'git' repository"**
-→ Make sure you're in the repo directory: `cd /Users/su/work/Y12WXP`
+→ Make sure you're in the repo directory: `cd /Users/su/work/WXP`
 
 ---
 

@@ -19,19 +19,19 @@ git add -A
 if git diff --cached --quiet; then
   echo "✅ Nothing to commit — already up to date."
 else
-  git commit -m "Initial commit: Work experience project files for Y12 students"
+  git commit -m "Initial commit: Work experience project files for students"
   echo "✅ Committed."
 fi
 
 # Set remote if not already set
 if ! git remote get-url origin &>/dev/null; then
-  git remote add origin https://github.com/kwr14/Y12WXP.git
+  git remote add origin https://github.com/kwr14/WXP.git
 fi
 
 # Push using gh (handles auth automatically)
 echo "🚀 Pushing to GitHub..."
-gh repo set-default kwr14/Y12WXP 2>/dev/null || true
+gh repo set-default kwr14/WXP 2>/dev/null || true
 git push -u origin main
 
 echo ""
-echo "✅ Done! Visit: https://github.com/kwr14/Y12WXP"
+echo "✅ Done! Visit: https://github.com/kwr14/WXP"

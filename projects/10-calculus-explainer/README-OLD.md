@@ -36,8 +36,8 @@ You also need an **Anthropic API key** for the AI explanations (get one free at 
 ### 1 — Clone the repo
 
 ```bash
-git clone https://github.com/kwr14/Y12WXP.git
-cd Y12WXP
+git clone https://github.com/kwr14/WXP.git
+cd WXP
 git checkout final
 ```
 
@@ -121,7 +121,7 @@ Expected output: 6 passing tests covering derivatives, integrals, and function e
 ## 📁 Project structure
 
 ```
-Y12WXP/
+WXP/
 ├── frontend/                   React + Vite + Three.js
 │   ├── src/
 │   │   ├── App.jsx             Main app layout + state

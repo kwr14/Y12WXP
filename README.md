@@ -1,4 +1,4 @@
-# Y12 Work Experience: Software Engineering Programme
+# Work Experience: Software Engineering Programme
 
 Welcome to two weeks of building real software.
 

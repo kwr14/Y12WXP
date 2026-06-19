@@ -38,4 +38,4 @@ git push -u origin final --force
 
 echo ""
 echo "✅  Done!  Branch 'final' is live at:"
-echo "   https://github.com/kwr14/Y12WXP/tree/final"
+echo "   https://github.com/kwr14/WXP/tree/final"

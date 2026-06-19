@@ -46,7 +46,7 @@
 
 ### **Status: ✅ Ready to Push to GitHub**
 
-**Location:** `/sessions/sweet-pensive-mccarthy/mnt/outputs/Y12WXP/`
+**Location:** `/sessions/sweet-pensive-mccarthy/mnt/outputs/WXP/`
 
 **Repository Contents:**
 - ✅ 16 project files committed
@@ -115,8 +115,8 @@
 
 ### **Immediately (Today):**
 1. ✅ Download the repository from outputs folder
-2. ✅ Move to `/Users/su/work/Y12WXP/`
-3. ✅ Verify git status: `cd /Users/su/work/Y12WXP && git status`
+2. ✅ Move to `/Users/su/work/WXP/`
+3. ✅ Verify git status: `cd /Users/su/work/WXP && git status`
 
 ### **This Week (Before Project Starts):**
 1. Follow **GITHUB-SETUP-INSTRUCTIONS.md**
@@ -152,7 +152,7 @@
 
 ### **Copy to GitHub Repo:**
 ```
-/Users/su/work/Y12WXP/
+/Users/su/work/WXP/
 ├── 1-Setup-Instructions.md
 ├── 2-GitHub-Repo-Structure.md
 ├── 3-Starter-Code-Template.md
@@ -169,7 +169,7 @@
 
 ### **Keep Locally (Not in GitHub):**
 ```
-/Users/su/work/Y12WXP/ (on your Mac)
+/Users/su/work/WXP/ (on your Mac)
 ├── Student-Onboarding-Email.md
 ├── Parent-Stakeholder-Summary.md
 ├── GITHUB-SETUP-INSTRUCTIONS.md
@@ -210,7 +210,7 @@
 ## 📞 Summary of What You Need to Do
 
 ### **Step 1: Set Up Locally (30 min)**
-- Move repo from outputs to `/Users/su/work/Y12WXP/`
+- Move repo from outputs to `/Users/su/work/WXP/`
 - Verify git status
 - Review all documents
 

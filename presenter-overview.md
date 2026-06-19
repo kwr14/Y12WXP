@@ -1,4 +1,4 @@
-# Y12 Work Experience: Presenter Overview
+# Work Experience: Presenter Overview
 
 **For:** Teachers, mentors, or anyone opening the programme
 **Format:** Slide deck with speaker notes
@@ -10,7 +10,7 @@
 ## Slide 1 — Title
 
 ```
-Y12 WORK EXPERIENCE
+WORK EXPERIENCE
 Software Engineering Programme
 
 Two weeks. Real code. Ship something.

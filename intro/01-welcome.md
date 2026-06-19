@@ -1,4 +1,4 @@
-# Welcome to the Y12 Work Experience Programme
+# Welcome to the Work Experience Programme
 
 You are about to spend two weeks building real software. Not a tutorial. Not a worksheet. A working application that runs in a browser, talks to APIs, stores data, and does something genuinely useful.
 
