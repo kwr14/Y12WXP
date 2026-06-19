@@ -16,7 +16,7 @@ Choose one of the ten projects below for your two-week build. Read the brief car
 | 06 | [Biodiversity Map](./06-biodiversity-map/README.md) | ⭐⭐⭐ | React, Leaflet.js, GBIF API | Biology, Geography, CS |
 | 07 | [Physics Simulation](./07-physics-simulation/README.md) | ⭐⭐⭐⭐ | React, HTML Canvas | Physics, Maths, CS |
 | 08 | [Text Analysis Tool](./08-text-analysis/README.md) | ⭐⭐⭐⭐ | React, Node.js/Express, natural.js | English, Linguistics, CS |
-| 09 | [AI Study Buddy](./09-ai-study-buddy/README.md) | ⭐⭐⭐⭐ | React, Node.js/Express, Claude API | All subjects, CS |
+| 09 | [AI Study Buddy](./09-ai-study-buddy/README.md) | ⭐⭐⭐⭐ | React, Node.js/Express, LLM API | All subjects, CS |
 | 10 | [Calculus Explainer](./10-calculus-explainer/README.md) | ⭐⭐⭐⭐⭐ | React, Three.js, Python/FastAPI | Maths, CS |
 
 **Difficulty key:**
@@ -54,7 +54,7 @@ An interactive physics playground with three simulations: projectile motion, orb
 Paste any text — an essay, a speech, a news article — and get deep analysis: word frequency charts, sentence length distributions, readability scores, keyword extraction, and side-by-side text comparison. The first project that needs both a frontend and a backend. Great for anyone interested in language, linguistics, or data science.
 
 ### 09 · AI Study Buddy ⭐⭐⭐⭐
-A subject-specific AI tutor powered by the Claude API. Users choose a subject and level, and the app can explain topics, generate quiz questions, mark answers, and create revision summaries. The most modern project in the list — you'll learn how to build AI-powered apps, which is one of the hottest skills in tech right now.
+A subject-specific AI tutor powered by an LLM API. Users choose a subject and level, and the app can explain topics, generate quiz questions, mark answers, and create revision summaries. The most modern project in the list — you'll learn how to build AI-powered apps, which is one of the hottest skills in tech right now.
 
 ### 10 · Calculus Explainer ⭐⭐⭐⭐⭐
 A fully worked-out project with 3D visualisations of calculus concepts (derivatives, integrals, Taylor series) built with React and Three.js, backed by a Python FastAPI server. This is the most complex project and comes with extensive documentation, starter code, and a day-by-day plan. Best for teams with some prior experience.

@@ -9,7 +9,7 @@ Welcome! Before you dive into building your project, work through these four sho
 | [01-welcome.md](./01-welcome.md) | What this programme is, what you'll build, how to pick your project | 15 min |
 | [02-tools-and-setup.md](./02-tools-and-setup.md) | Installing VS Code, Node.js, Python, Git, and GitHub | 45–60 min |
 | [03-working-as-a-team.md](./03-working-as-a-team.md) | Git workflow, pull requests, standups, and agile sprints | 20 min |
-| [04-using-ai-as-a-developer.md](./04-using-ai-as-a-developer.md) | How to use GitHub Copilot and Claude effectively (and safely) | 20 min |
+| [04-using-ai-as-a-developer.md](./04-using-ai-as-a-developer.md) | How to use AI coding agents (e.g. Auggie) and Copilot effectively (and safely) | 20 min |
 
 ## How to use this section
 

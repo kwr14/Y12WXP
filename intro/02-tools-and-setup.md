@@ -209,7 +209,7 @@ On most Macs, `python` is Python 2 (old, avoid) and `python3` is Python 3 (use t
 
 ### Everything is broken and I want to give up
 
-This happens to everyone, including people who've been coding for 20 years. Close the terminal, take a breath, and describe the exact error message to a mentor or paste it into Claude/ChatGPT. Nine times out of ten there's a simple fix.
+This happens to everyone, including people who've been coding for 20 years. Close the terminal, take a breath, and describe the exact error message to a mentor or paste it into your AI coding agent (e.g. Auggie). Nine times out of ten there's a simple fix.
 
 ---
 

@@ -149,7 +149,7 @@ WHEN YOU'RE STUCK, IN ORDER:
 
 1. Read the error message carefully (actually read it)
 2. Search the error message + language name online
-3. Ask an AI (Claude, ChatGPT) — paste the error + your code
+3. Ask an AI coding agent (e.g. Auggie) — paste the error + your code
 4. Ask a teammate
 5. Ask a mentor
 
@@ -161,7 +161,25 @@ Don't sit stuck for more than 15 minutes without doing one of these.
 
 ---
 
-## Slide 9 — What "done" looks like
+## Slide 9 — Self-paced warm-up tutorials
+
+```
+tuts/  — self-contained interactive tutorials
+
+  git-tutorial.html         The basics + branching + GitHub flow
+  python-tutorial.html      Variables, lists, functions, FizzBuzz
+  javascript-tutorial.html  Variables, arrays, arrow funcs, DOM
+
+Open any file in a browser. No install. No build.
+Concepts → Exercises → Quiz → Cheat Sheet → Summary.
+```
+
+**Speaker notes:**
+"If anyone on the team feels rusty on Git, Python, or JavaScript, point them at the `tuts/` folder. Each tutorial is a single HTML file — no install, no build, just double-click to open in a browser. You get concepts up top, a few hands-on exercises, then a 7-question quiz with instant feedback and a running score. About 30–45 minutes per tutorial. Useful on Day 1 if setup finishes early, and any time later in the fortnight when someone hits a fundamentals wall."
+
+---
+
+## Slide 10 — What "done" looks like
 
 ```
 BY DAY 10, YOUR TEAM WILL HAVE:
@@ -179,7 +197,7 @@ That's it. That's the brief.
 
 ---
 
-## Slide 10 — Before you start today
+## Slide 11 — Before you start today
 
 ```
 RIGHT NOW:
@@ -187,8 +205,9 @@ RIGHT NOW:
 1. Open README.md in this repository
 2. Read intro/01-welcome.md as a team (15 min)
 3. Follow intro/02-tools-and-setup.md — everyone gets their machine ready
-4. Read projects/README.md — discuss which project to do
-5. Open your chosen project brief and read it together
+4. Optional: open tuts/ for a Git / Python / JS refresher (single-file, no install)
+5. Read projects/README.md — discuss which project to do
+6. Open your chosen project brief and read it together
 
 By end of Day 1:
   ✓ All machines set up
@@ -210,11 +229,11 @@ These are for the teacher or mentor running the experience, not for students.
 ### Before Day 1
 - Clone this repo and have it open on a shared screen
 - Confirm student laptops can install Node.js and Python (admin rights may be needed — check with IT in advance)
-- If any students want to use the AI Study Buddy (project 09) or Calculus Explainer (project 10), you'll need an Anthropic API key set up ahead of time
+- If any students want to use the AI Study Buddy (project 09) or Calculus Explainer (project 10), you'll need an LLM API key set up ahead of time
 - Optional: create a Slack or Teams channel for the group
 
 ### Day 1 checklist
-- [ ] Show slides 1–10 (this deck) — 20–25 minutes
+- [ ] Show slides 1–11 (this deck) — 20–25 minutes
 - [ ] Students read welcome guide and set up machines
 - [ ] Teams form and pick projects (keep teams to 3–5)
 - [ ] Each team creates a GitHub repo and invites all members

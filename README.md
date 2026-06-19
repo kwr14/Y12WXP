@@ -27,7 +27,7 @@ This repository contains everything you need: guides to get set up, background o
 | 06 | [Biodiversity Map](./projects/06-biodiversity-map/README.md) | ⭐⭐⭐ | Interactive UK wildlife sighting map | Biology, Geography |
 | 07 | [Physics Simulation](./projects/07-physics-simulation/README.md) | ⭐⭐⭐⭐ | Projectile, orbital, and SHM simulations | Physics, Maths |
 | 08 | [Text Analysis Tool](./projects/08-text-analysis/README.md) | ⭐⭐⭐⭐ | Readability and keyword analysis | English, Linguistics |
-| 09 | [AI Study Buddy](./projects/09-ai-study-buddy/README.md) | ⭐⭐⭐⭐ | Subject-specific AI tutor (Claude API) | All subjects |
+| 09 | [AI Study Buddy](./projects/09-ai-study-buddy/README.md) | ⭐⭐⭐⭐ | Subject-specific AI tutor (LLM API) | All subjects |
 | 10 | [Calculus Explainer](./projects/10-calculus-explainer/README.md) | ⭐⭐⭐⭐⭐ | 3D calculus visualiser (Three.js + Python) | A-Level Maths |
 
 **Difficulty:** ⭐⭐ = GCSE level &nbsp; ⭐⭐⭐ = GCSE+ &nbsp; ⭐⭐⭐⭐ = A-Level &nbsp; ⭐⭐⭐⭐⭐ = stretch

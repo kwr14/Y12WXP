@@ -1,6 +1,6 @@
 # Using AI as a Developer
 
-AI coding tools have changed software development faster than anything in the past decade. GitHub Copilot, Claude, and ChatGPT are now part of the daily workflow at most tech companies. Learning to use them effectively — and knowing their limits — is a genuine professional skill.
+AI coding tools have changed software development faster than anything in the past decade. AI coding agents (e.g. Auggie) and inline assistants like GitHub Copilot are now part of the daily workflow at most tech companies. Learning to use them effectively — and knowing their limits — is a genuine professional skill.
 
 This guide will help you use AI tools confidently without becoming dependent on them.
 
@@ -66,16 +66,15 @@ Copilot will often generate a reasonable implementation.
 
 ### When to pause
 
-If Copilot generates a long block of code, don't just accept it. Read it. Do you understand what it's doing? Could you explain it to someone else? If not, ask Claude to explain it before moving on.
+If Copilot generates a long block of code, don't just accept it. Read it. Do you understand what it's doing? Could you explain it to someone else? If not, ask your AI coding agent to explain it before moving on.
 
 ---
 
-## Claude and ChatGPT: conversational AI
+## AI coding agents: a conversational collaborator
 
-While Copilot lives in your editor, Claude and ChatGPT are more like a knowledgeable colleague you can have a conversation with.
+While Copilot lives in your editor as autocomplete, an AI coding agent (e.g. Auggie) is more like a knowledgeable colleague you can have a conversation with — one that can read your files, run commands, and make edits with your approval.
 
-**Claude:** https://claude.ai
-**ChatGPT:** https://chat.openai.com
+We'll mostly use **Auggie** on this programme, but the same ideas apply to any agent.
 
 Use these for:
 - Understanding error messages

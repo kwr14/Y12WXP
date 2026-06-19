@@ -183,7 +183,7 @@ If someone has a blocker, someone else should offer to help — but have that co
 **Unblock yourself first, then ask.** Before asking for help, try:
 1. Re-reading the error message carefully
 2. Googling the exact error message
-3. Asking Claude or ChatGPT (with full context)
+3. Asking an AI coding agent (e.g. Auggie) with full context
 4. Checking the library's documentation
 5. Looking at a working example
 
