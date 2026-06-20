@@ -166,21 +166,25 @@ Don't sit stuck for more than 15 minutes without doing one of these.
 ```
 tuts/index.html  ← start here
 
-  FOUNDATIONS                    ~45 min each
-    git-tutorial.html            Basics + branching + GitHub flow
-    python-tutorial.html         Variables, lists, functions, FizzBuzz
-    javascript-tutorial.html     Arrays, arrow funcs, DOM
+  START HERE                          ~60 min
+    computer-fundamentals-tutorial    Hardware → binary → CPU → OS →
+                                      networks → compilation → SDLC
 
-  AI & MATHS                     ~40–50 min each
-    math-for-llms-tutorial.html  Vectors, matrices, gradient descent
-    llm-from-scratch-tutorial    Build a character-level GPT
-                                 (Python + uv, 6 small chapters)
+  FOUNDATIONS                         ~45 min each
+    git-tutorial.html                 Basics + branching + GitHub flow
+    python-tutorial.html              Variables, lists, functions
+    javascript-tutorial.html          Arrays, arrow funcs, DOM
+
+  AI & MATHS                          ~40–50 min each
+    math-for-llms-tutorial.html       Vectors, matrices, gradient descent
+    llm-from-scratch-tutorial         Build a character-level GPT
+                                      (Python + uv, 6 small chapters)
 
 Single-file HTML. No install. No build. No accounts.
 ```
 
 **Speaker notes:**
-"Point everyone at `tuts/index.html` — it's the landing page that links to all five tutorials with a brief description of each. Each tutorial itself is a single HTML file with no install or build step; just double-click to open. The three Foundations tutorials (Git, Python, JavaScript) follow the same Concepts → Exercises → Quiz → Cheat Sheet → Summary structure, ~45 min each with a 7-question quiz at the end. The two AI & Maths tutorials go deeper: `math-for-llms-tutorial.html` is Brilliant-style — drag vectors, change matrices, step through gradient descent on a loss curve. `llm-from-scratch-tutorial.html` is the most ambitious — it walks through six small Python files (managed by `uv`) that progressively build a working character-level GPT. Useful on Day 1 if setup finishes early, and any time later when someone hits a fundamentals wall."
+"Point everyone at `tuts/index.html` — the landing page that links to all six tutorials. The first one, `computer-fundamentals-tutorial.html`, is new and probably the best starting point for anyone less technical on the team: it walks the whole stack on a single page with about ten inline diagrams, covering hardware, binary, the CPU, memory, the OS, networks, compilation, the SDLC, and the everyday skills a developer needs. The three Foundations tutorials (Git, Python, JavaScript) follow the same Concepts → Exercises → Quiz → Cheat Sheet → Summary structure, ~45 min each. The two AI & Maths tutorials go deeper: `math-for-llms-tutorial.html` is Brilliant-style — drag vectors, change matrices, step through gradient descent. `llm-from-scratch-tutorial.html` walks through six small Python files (managed by `uv`) that progressively build a working character-level GPT. Useful on Day 1 if setup finishes early, and any time later when someone hits a fundamentals wall."
 
 ---
 

@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Computer Fundamentals — Interactive</title>
+  <style>
+    :root {
+      --bg: #0b0d12;
+      --surface: #14171f;
+      --card: #1c2029;
+      --border: #2a2f3a;
+      --text: #e8eaf0;
+      --muted: #8b91a3;
+      --accent: #22d3ee;       /* electric cyan */
+      --accent2: #a78bfa;      /* purple */
+      --accent3: #f59e0b;      /* amber */
+      --accent4: #4ade80;      /* green */
+      --accent5: #f472b6;      /* pink */
+      --code-bg: #0a0d14;
+      --success: #4caf50;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    nav { background: rgba(20,23,31,0.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 0 1.6rem; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+    .nav-logo { font-size: 1.3rem; font-weight: 700; color: var(--accent); padding: 0.9rem 0; margin-right: auto; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 0.82rem; padding: 0.35rem 0.65rem; border-radius: 6px; transition: all 0.15s; }
+    nav a:hover { color: var(--text); background: var(--card); }
+    nav a.home { color: var(--accent2); }
+
+    .hero { background: radial-gradient(ellipse at top, #16243a 0%, #0b0d12 70%); border-bottom: 1px solid var(--border); padding: 4.5rem 2rem 3rem; text-align: center; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><path d='M0 30h60M30 0v60' stroke='%2322d3ee' stroke-opacity='0.05' stroke-width='1'/></svg>"); opacity: 0.6; pointer-events: none; }
+    .hero h1 { font-size: clamp(2rem, 4.5vw, 3.2rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem; position: relative; }
+    .hero h1 span { color: var(--accent); }
+    .hero p { color: var(--muted); font-size: 1.08rem; max-width: 700px; margin: 0 auto 1.6rem; position: relative; }
+    .hero-badges { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; position: relative; }
+    .badge { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 0.28rem 0.75rem; border-radius: 99px; letter-spacing: 0.05em; text-transform: uppercase; background: var(--accent); color: #0b0d12; }
+    .badge.purple { background: var(--accent2); }
+    .badge.amber { background: var(--accent3); }
+    .badge.green { background: var(--accent4); }
+    .badge.outline { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+
+    .progress-sticky { position: sticky; top: 50px; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.55rem 1rem; z-index: 90; }
+    .progress-bar { height: 5px; background: var(--card); border-radius: 3px; overflow: hidden; max-width: 920px; margin: 0 auto; }
+    #progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.4s; }
+    #score-display { color: var(--muted); font-size: 0.8rem; margin-top: 0.3rem; text-align: center; }
+
+    .container { max-width: 940px; margin: 0 auto; padding: 2rem 1.6rem; }
+    section { margin-bottom: 4rem; }
+    .section-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+    .section-icon { font-size: 1.5rem; }
+    .section-header h2 { font-size: 1.55rem; letter-spacing: -0.01em; }
+    .section-header .num { color: var(--accent); font-weight: 800; }
+    section > p { margin-bottom: 1rem; }
+    section > p.lead { font-size: 1.05rem; color: var(--text); }
+    section p.muted { color: var(--muted); font-size: 0.93rem; }
+    section ul, section ol { margin: 0 0 1rem 1.4rem; }
+    section li { margin-bottom: 0.35rem; }
+
+    .lesson-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem; margin: 1rem 0; }
+    .lesson-card h3 { color: var(--accent); margin-bottom: 0.8rem; font-size: 1.1rem; }
+    .lesson-card h3.purple { color: var(--accent2); }
+    .lesson-card h3.amber { color: var(--accent3); }
+    .lesson-card .key { background: rgba(34,211,238,0.08); border-left: 3px solid var(--accent); padding: 0.7rem 1rem; margin: 1rem 0; border-radius: 4px; font-size: 0.95rem; }
+    .lesson-card .insight { background: rgba(167,139,250,0.08); border-left: 3px solid var(--accent2); padding: 0.7rem 1rem; margin: 1rem 0; border-radius: 4px; font-size: 0.95rem; }
+    .lesson-card .insight strong { color: var(--accent2); }
+    .lesson-card .warn { background: rgba(245,158,11,0.08); border-left: 3px solid var(--accent3); padding: 0.7rem 1rem; margin: 1rem 0; border-radius: 4px; font-size: 0.95rem; }
+    .lesson-card .warn strong { color: var(--accent3); }
+
+    .diagram { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; margin: 1.2rem 0; text-align: center; }
+    .diagram svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+    .diagram .caption { color: var(--muted); font-size: 0.85rem; margin-top: 0.8rem; font-style: italic; }
+
+    /* Reusable SVG text styles */
+    .svg-text { fill: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 13px; font-weight: 600; }
+    .svg-text.small { font-size: 11px; font-weight: 500; fill: var(--muted); }
+    .svg-text.mono { font-family: 'SF Mono', 'Consolas', monospace; }
+
+    code, .mono { font-family: 'SF Mono', 'Consolas', monospace; background: var(--code-bg); padding: 0.12em 0.4em; border-radius: 4px; font-size: 0.88em; color: var(--accent); }
+
+    .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 720px) { .twocol { grid-template-columns: 1fr; } }
+    .threecol { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
+    @media (max-width: 720px) { .threecol { grid-template-columns: 1fr; } }
+
+    .ministat { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1rem; }
+    .ministat h4 { color: var(--accent); font-size: 0.88rem; margin-bottom: 0.3rem; }
+    .ministat h4.amber { color: var(--accent3); }
+    .ministat h4.purple { color: var(--accent2); }
+    .ministat h4.green { color: var(--accent4); }
+    .ministat p { color: var(--muted); font-size: 0.85rem; line-height: 1.55; }
+
+    .check { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem; margin-top: 1.2rem; }
+    .check .q { font-weight: 600; margin-bottom: 0.8rem; }
+    .check .options { display: flex; flex-direction: column; gap: 0.5rem; }
+    .check label { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.8rem; background: var(--card); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: background 0.15s; }
+    .check label:hover { background: #232735; }
+    .check input[type="radio"]:disabled + span { opacity: 0.7; }
+    .check label.correct { border-color: var(--success); background: rgba(76,175,80,0.12); }
+    .check label.wrong { border-color: #e57373; background: rgba(229,115,115,0.12); }
+    .check .feedback { margin-top: 0.7rem; font-size: 0.88rem; color: var(--muted); min-height: 1.2em; }
+    .check .feedback.ok { color: var(--success); }
+    .check .feedback.bad { color: #e57373; }
+
+    .widget { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; margin: 1rem 0; }
+    .bits { display: flex; gap: 0.4rem; justify-content: center; margin: 0.8rem 0; flex-wrap: wrap; }
+    .bit { width: 52px; height: 64px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; user-select: none; }
+    .bit .val { font-size: 1.4rem; font-weight: 700; font-family: 'SF Mono', monospace; }
+    .bit .pow { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+    .bit.on { background: var(--accent); color: #0b0d12; border-color: var(--accent); }
+    .bit.on .pow { color: rgba(11,13,18,0.7); }
+    .bit:hover { transform: translateY(-2px); }
+    .widget .readout { text-align: center; font-family: 'SF Mono', monospace; font-size: 1rem; color: var(--accent); margin-top: 0.6rem; }
+
+    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 2rem; text-align: center; color: var(--muted); font-size: 0.88rem; }
+    footer code { background: var(--code-bg); padding: 0.1em 0.4em; border-radius: 4px; color: var(--text); }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-logo">⚙ Computer Fundamentals</div>
+    <a href="index.html" class="home">← All tutorials</a>
+    <a href="#intro">Intro</a>
+    <a href="#layers">Layers</a>
+    <a href="#vonneumann">Architecture</a>
+    <a href="#memory">Memory</a>
+    <a href="#binary">Binary</a>
+    <a href="#cpu">CPU</a>
+    <a href="#os">OS</a>
+    <a href="#networks">Networks</a>
+    <a href="#compile">Compilation</a>
+    <a href="#sdlc">SDLC</a>
+    <a href="#skills">Skills</a>
+  </nav>
+
+  <header class="hero">
+    <h1>How a <span>computer</span> works, end to end</h1>
+    <p>From electrons in silicon, up through binary, the CPU, the operating system, the network, all the way to the code <em>you</em> write. The whole stack on one page, with diagrams.</p>
+    <div class="hero-badges">
+      <span class="badge">Beginner-friendly</span>
+      <span class="badge purple">~60 min read</span>
+      <span class="badge amber">10 diagrams</span>
+      <span class="badge green">7 quizzes</span>
+      <span class="badge outline">No install</span>
+    </div>
+  </header>
+
+  <div class="progress-sticky">
+    <div class="progress-bar"><div id="progress-fill"></div></div>
+    <div id="score-display">0 / 7 checks complete</div>
+  </div>
+
+  <div class="container">
+
+    <section id="intro">
+      <div class="section-header"><span class="section-icon">🎯</span><h2><span class="num">0.</span> Why this exists</h2></div>
+      <p class="lead">Most courses teach you a programming language without telling you what's underneath. That's like teaching driving without ever opening the hood. You can do it &mdash; until something breaks.</p>
+      <p>This page walks the whole stack in order: <strong>hardware → binary → CPU → memory → OS → network → your code → SDLC</strong>. By the end you'll be able to read a job description, hear "the kernel scheduled it on a different core" or "we cache that in L2" or "deploy via CI/CD" and know what's actually being said.</p>
+      <p class="muted">It's the missing prelude to everything else in this tutorial library.</p>
+    </section>
+
+    <section id="layers">
+      <div class="section-header"><span class="section-icon">🥞</span><h2><span class="num">1.</span> The big picture: layers of abstraction</h2></div>
+      <p>A working computer is a stack of layers. Each layer hides the messy details of the one beneath, and offers a cleaner interface to the one above. Your Python program never thinks about voltages; the transistors never know what a function is.</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 600 380" width="600" aria-label="Layers of abstraction in a computer system">
+          <defs>
+            <linearGradient id="l1" x1="0" x2="1"><stop offset="0" stop-color="#f472b6"/><stop offset="1" stop-color="#a78bfa"/></linearGradient>
+            <linearGradient id="l2" x1="0" x2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#22d3ee"/></linearGradient>
+            <linearGradient id="l3" x1="0" x2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#4ade80"/></linearGradient>
+            <linearGradient id="l4" x1="0" x2="1"><stop offset="0" stop-color="#4ade80"/><stop offset="1" stop-color="#f59e0b"/></linearGradient>
+            <linearGradient id="l5" x1="0" x2="1"><stop offset="0" stop-color="#f59e0b"/><stop offset="1" stop-color="#ef4444"/></linearGradient>
+          </defs>
+          <g font-family="Inter, system-ui" font-size="14" font-weight="600">
+            <rect x="60"  y="20"  width="480" height="50" rx="8" fill="url(#l1)" opacity="0.85"/>
+            <text x="300" y="50"  text-anchor="middle" fill="#0b0d12">User &amp; applications  (browser, editor, this page)</text>
+            <rect x="60"  y="80"  width="480" height="50" rx="8" fill="url(#l2)" opacity="0.85"/>
+            <text x="300" y="110" text-anchor="middle" fill="#0b0d12">High-level languages  (Python, JavaScript, Rust…)</text>
+            <rect x="60"  y="140" width="480" height="50" rx="8" fill="url(#l3)" opacity="0.85"/>
+            <text x="300" y="170" text-anchor="middle" fill="#0b0d12">Operating system  (Linux, macOS, Windows kernel + libs)</text>
+            <rect x="60"  y="200" width="480" height="50" rx="8" fill="url(#l4)" opacity="0.85"/>
+            <text x="300" y="230" text-anchor="middle" fill="#0b0d12">Machine code &amp; ISA  (x86, ARM instructions)</text>
+            <rect x="60"  y="260" width="480" height="50" rx="8" fill="url(#l5)" opacity="0.85"/>
+            <text x="300" y="290" text-anchor="middle" fill="#0b0d12">Hardware  (CPU, RAM, disk, I/O devices)</text>
+            <rect x="60"  y="320" width="480" height="40" rx="8" fill="#0b0d12" stroke="#2a2f3a"/>
+            <text x="300" y="345" text-anchor="middle" fill="#8b91a3" font-size="12" font-style="italic">Transistors → logic gates → circuits (physics &amp; silicon)</text>
+            <text x="20"  y="55"  fill="#8b91a3" font-size="11">↑ closer</text>
+            <text x="20"  y="68"  fill="#8b91a3" font-size="11">to you</text>
+            <text x="20"  y="335" fill="#8b91a3" font-size="11">↓ closer to</text>
+            <text x="20"  y="348" fill="#8b91a3" font-size="11">the metal</text>
+          </g>
+        </svg>
+        <div class="caption">The layered stack. Each layer "speaks" only to its neighbours above and below.</div>
+      </div>
+
+      <div class="lesson-card">
+        <h3>Why this matters</h3>
+        <p>Every bug, every performance problem, every security hole is ultimately a leak in one of these layers &mdash; some detail from below bubbling up to bite the layer above. Understanding the stack is what makes the difference between "it works" and "I know <em>why</em> it works".</p>
+        <div class="key">💡 <strong>Abstraction</strong> = hiding complexity behind a simpler interface. It's the single most important idea in all of computing.</div>
+      </div>
+
+      <div class="check" data-check="1">
+        <div class="q">Why do we use layers of abstraction instead of writing everything as raw machine code?</div>
+        <div class="options">
+          <label><input type="radio" name="q1" value="a"/><span>Machine code is illegal in most countries.</span></label>
+          <label><input type="radio" name="q1" value="b" data-correct="true"/><span>Each layer lets us reason about a small piece of the problem; without them, a single bug fix would mean rewriting from transistors up.</span></label>
+          <label><input type="radio" name="q1" value="c"/><span>The CPU only understands Python.</span></label>
+        </div>
+        <div class="feedback"></div>
+      </div>
+    </section>
+
+    <section id="vonneumann">
+      <div class="section-header"><span class="section-icon">🏛️</span><h2><span class="num">2.</span> Computer organisation: the Von Neumann model</h2></div>
+      <p>In 1945, John von Neumann described a model so universal that <strong>every laptop, phone, server and microwave you'll touch in your life follows it</strong>. There are four parts: a CPU (which has an ALU and a Control Unit), memory, input/output, and the buses that connect them.</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 620 380" width="620" aria-label="Von Neumann architecture">
+          <g font-family="Inter, system-ui" font-size="13">
+            <rect x="20" y="40" width="240" height="200" rx="10" fill="#1c2029" stroke="#22d3ee" stroke-width="2"/>
+            <text x="140" y="60" text-anchor="middle" class="svg-text" fill="#22d3ee" font-weight="700">CPU (the brain)</text>
+            <rect x="40"  y="80"  width="90" height="60" rx="6" fill="#0a0d14" stroke="#a78bfa"/>
+            <text x="85"  y="105" text-anchor="middle" fill="#a78bfa" font-weight="600">ALU</text>
+            <text x="85"  y="125" text-anchor="middle" fill="#8b91a3" font-size="10">arithmetic &amp; logic</text>
+            <rect x="150" y="80"  width="90" height="60" rx="6" fill="#0a0d14" stroke="#f59e0b"/>
+            <text x="195" y="105" text-anchor="middle" fill="#f59e0b" font-weight="600">Control</text>
+            <text x="195" y="125" text-anchor="middle" fill="#8b91a3" font-size="10">fetch &amp; decode</text>
+            <rect x="40"  y="160" width="200" height="60" rx="6" fill="#0a0d14" stroke="#4ade80"/>
+            <text x="140" y="185" text-anchor="middle" fill="#4ade80" font-weight="600">Registers</text>
+            <text x="140" y="205" text-anchor="middle" fill="#8b91a3" font-size="10">tiny on-chip scratchpads</text>
+
+            <rect x="370" y="40"  width="230" height="80" rx="10" fill="#1c2029" stroke="#a78bfa" stroke-width="2"/>
+            <text x="485" y="65" text-anchor="middle" fill="#a78bfa" font-weight="700">Memory (RAM)</text>
+            <text x="485" y="88" text-anchor="middle" fill="#e8eaf0" font-size="12">holds both program code</text>
+            <text x="485" y="105" text-anchor="middle" fill="#e8eaf0" font-size="12">and the data it works on</text>
+
+            <rect x="370" y="160" width="230" height="80" rx="10" fill="#1c2029" stroke="#f472b6" stroke-width="2"/>
+            <text x="485" y="185" text-anchor="middle" fill="#f472b6" font-weight="700">Input / Output</text>
+            <text x="485" y="208" text-anchor="middle" fill="#e8eaf0" font-size="12">keyboard, screen, disk,</text>
+            <text x="485" y="225" text-anchor="middle" fill="#e8eaf0" font-size="12">network card, GPU, …</text>
+
+            <line x1="260" y1="80"  x2="370" y2="80"  stroke="#a78bfa" stroke-width="2"/>
+            <line x1="260" y1="100" x2="370" y2="100" stroke="#a78bfa" stroke-width="2"/>
+            <line x1="260" y1="120" x2="370" y2="120" stroke="#a78bfa" stroke-width="2"/>
+            <text x="315" y="75" text-anchor="middle" fill="#a78bfa" font-size="10">address bus</text>
+            <text x="315" y="135" text-anchor="middle" fill="#a78bfa" font-size="10">data bus / control bus</text>
+            <line x1="260" y1="200" x2="370" y2="200" stroke="#f472b6" stroke-width="2"/>
+            <text x="315" y="195" text-anchor="middle" fill="#f472b6" font-size="10">data bus</text>
+
+            <text x="310" y="290" text-anchor="middle" fill="#e8eaf0" font-weight="700" font-size="15">The fetch-decode-execute cycle</text>
+            <g transform="translate(120,310)">
+              <rect x="0"   y="0" width="100" height="40" rx="6" fill="#0a0d14" stroke="#22d3ee"/>
+              <text x="50"  y="25" text-anchor="middle" fill="#22d3ee" font-weight="600">FETCH</text>
+              <rect x="120" y="0" width="100" height="40" rx="6" fill="#0a0d14" stroke="#22d3ee"/>
+              <text x="170" y="25" text-anchor="middle" fill="#22d3ee" font-weight="600">DECODE</text>
+              <rect x="240" y="0" width="100" height="40" rx="6" fill="#0a0d14" stroke="#22d3ee"/>
+              <text x="290" y="25" text-anchor="middle" fill="#22d3ee" font-weight="600">EXECUTE</text>
+              <path d="M100 20 L120 20" stroke="#22d3ee" marker-end="url(#a)"/>
+              <path d="M220 20 L240 20" stroke="#22d3ee" marker-end="url(#a)"/>
+              <path d="M340 20 Q380 20 380 50 Q380 80 50 80 Q-20 80 -20 50 Q-20 20 0 20" fill="none" stroke="#22d3ee" stroke-dasharray="4 3"/>
+            </g>
+            <defs><marker id="a" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="#22d3ee"/></marker></defs>
+          </g>
+        </svg>
+        <div class="caption">CPU, memory, I/O and the buses that connect them. The CPU repeats fetch → decode → execute billions of times per second.</div>
+      </div>
+
+      <div class="threecol">
+        <div class="ministat"><h4>Clock speed</h4><p>A 3&nbsp;GHz CPU ticks <strong>3 billion times per second</strong>. Each tick advances the fetch-decode-execute pipeline.</p></div>
+        <div class="ministat"><h4 class="amber">Cores</h4><p>A "quad-core" CPU is four independent von-Neumann machines on one chip, sharing memory and I/O.</p></div>
+        <div class="ministat"><h4 class="purple">ISA</h4><p>The Instruction Set Architecture is the contract between hardware and software. <code>x86</code> (Intel/AMD) and <code>ARM</code> (Apple Silicon, phones) are the two big ones.</p></div>
+      </div>
+
+      <div class="check" data-check="2">
+        <div class="q">In the von Neumann model, where are <em>both</em> the program instructions and the data they operate on stored?</div>
+        <div class="options">
+          <label><input type="radio" name="q2" value="a"/><span>The program lives in the CPU; the data lives in RAM.</span></label>
+          <label><input type="radio" name="q2" value="b" data-correct="true"/><span>Both live in main memory (RAM). The CPU fetches instructions and data from the same place.</span></label>
+          <label><input type="radio" name="q2" value="c"/><span>The program lives on the network and is streamed to the CPU each tick.</span></label>
+        </div>
+        <div class="feedback"></div>
+      </div>
+    </section>
+
+    <section id="memory">
+      <div class="section-header"><span class="section-icon">📚</span><h2><span class="num">3.</span> The memory hierarchy</h2></div>
+      <p>Memory is a brutal trade-off: <strong>fast memory is expensive and tiny; cheap memory is huge but slow</strong>. The solution is to build a pyramid &mdash; a small amount of very fast memory close to the CPU, backed by progressively larger and slower layers.</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 600 360" width="600" aria-label="Memory hierarchy pyramid">
+          <g font-family="Inter, system-ui" font-size="13">
+            <polygon points="280,20 320,20 360,70 240,70"   fill="#22d3ee" opacity="0.9"/>
+            <text x="300" y="48" text-anchor="middle" fill="#0b0d12" font-weight="700">Registers</text>
+            <text x="465" y="50" fill="#8b91a3" font-size="11">~1 ns · &lt; 1 KB</text>
+
+            <polygon points="240,70 360,70 400,120 200,120" fill="#a78bfa" opacity="0.9"/>
+            <text x="300" y="100" text-anchor="middle" fill="#0b0d12" font-weight="700">L1 / L2 / L3 cache</text>
+            <text x="465" y="100" fill="#8b91a3" font-size="11">~1–30 ns · KB–MB</text>
+
+            <polygon points="200,120 400,120 440,180 160,180" fill="#4ade80" opacity="0.9"/>
+            <text x="300" y="155" text-anchor="middle" fill="#0b0d12" font-weight="700">RAM (main memory)</text>
+            <text x="465" y="155" fill="#8b91a3" font-size="11">~100 ns · 8–128 GB</text>
+
+            <polygon points="160,180 440,180 490,250 110,250" fill="#f59e0b" opacity="0.9"/>
+            <text x="300" y="220" text-anchor="middle" fill="#0b0d12" font-weight="700">SSD / NVMe</text>
+            <text x="510" y="220" fill="#8b91a3" font-size="11">~50 µs · TB</text>
+
+            <polygon points="110,250 490,250 550,320 50,320"  fill="#f472b6" opacity="0.9"/>
+            <text x="300" y="290" text-anchor="middle" fill="#0b0d12" font-weight="700">HDD / Cloud storage</text>
+            <text x="510" y="290" fill="#8b91a3" font-size="11">~10 ms · PB</text>
+
+            <text x="40" y="50" fill="#22d3ee" font-weight="700">FAST</text>
+            <text x="40" y="65" fill="#8b91a3" font-size="10">tiny</text>
+            <text x="40" y="310" fill="#f472b6" font-weight="700">SLOW</text>
+            <text x="40" y="325" fill="#8b91a3" font-size="10">huge</text>
+          </g>
+        </svg>
+        <div class="caption">The memory pyramid. Each step down is ~10–100× slower but ~10–1000× larger.</div>
+      </div>
+
+      <div class="lesson-card">
+        <h3 class="purple">Why caching wins</h3>
+        <p>RAM is roughly <strong>100× slower</strong> than CPU registers. If every read had to go all the way to RAM, modern CPUs would stall most of the time. So they keep recently-used data in tiny L1/L2/L3 caches right next to the cores. Most reads hit the cache &mdash; you only "pay" for a RAM trip occasionally.</p>
+        <div class="insight">💡 <strong>Locality</strong> &mdash; programs tend to use the same data again soon (temporal locality) and nearby data soon after (spatial locality). Caches exploit both.</div>
+        <div class="warn">⚠️ <strong>Cache misses</strong> are one of the biggest hidden costs in modern software. A "fast" algorithm with bad memory access patterns can lose to a "slow" one that's cache-friendly.</div>
+      </div>
+
+      <div class="check" data-check="3">
+        <div class="q">Why don't computer designers just make all memory as fast as registers?</div>
+        <div class="options">
+          <label><input type="radio" name="q3" value="a" data-correct="true"/><span>Fast memory is physically expensive and limited &mdash; making 16 GB of register-speed memory would cost millions and not fit on the chip.</span></label>
+          <label><input type="radio" name="q3" value="b"/><span>Operating systems can't handle it.</span></label>
+          <label><input type="radio" name="q3" value="c"/><span>Programs don't actually need fast memory.</span></label>
+        </div>
+        <div class="feedback"></div>
+      </div>
+    </section>
+
+    <section id="binary">
+      <div class="section-header"><span class="section-icon">🔢</span><h2><span class="num">4.</span> Binary &amp; how computers represent everything</h2></div>
+      <p>A transistor has two reliable states: <strong>on</strong> and <strong>off</strong>. Call them <code>1</code> and <code>0</code>. Glue 8 of them together and you get a <em>byte</em> &mdash; enough to represent one of 256 things. That's the entire foundation.</p>
+
+      <div class="lesson-card">
+        <h3>One byte = 8 bits = a number from 0 to 255</h3>
+        <p>Each bit is worth twice as much as the one to its right: 128, 64, 32, 16, 8, 4, 2, 1. Add up the bits that are "on" to read the number. Click a bit to flip it:</p>
+
+        <div class="widget" id="bitwidget">
+          <div class="bits" id="bits"></div>
+          <div class="readout" id="bitreadout">decimal: 0  ·  hex: 0x00  ·  binary: 00000000</div>
+          <p class="muted" style="text-align:center; font-size:0.85rem; margin-top:0.5rem;">Try making 65 — that's the ASCII code for the letter "A".</p>
+        </div>
+
+        <div class="insight">💡 Same 8 bits, different interpretation: <code>01000001</code> could mean the <em>number 65</em>, or the <em>letter "A"</em>, or a single <em>pixel colour channel</em>, or part of a machine instruction. <strong>Meaning lives in context, not in the bits.</strong></div>
+      </div>
+
+      <div class="twocol">
+        <div class="lesson-card">
+          <h3 class="amber">Encoding text</h3>
+          <p><strong>ASCII</strong> (1960s) used 7 bits to cover English letters, digits and punctuation &mdash; 128 characters.</p>
+          <p><strong>Unicode + UTF-8</strong> (today) uses 1–4 bytes per character and covers <strong>149,000+ characters</strong> across every script on Earth, plus emoji 🎉.</p>
+        </div>
+        <div class="lesson-card">
+          <h3 class="amber">Encoding everything else</h3>
+          <ul>
+            <li><strong>Integers</strong>: binary (with a sign bit for negatives, "two's complement")</li>
+            <li><strong>Decimals</strong>: floating point &mdash; sign + exponent + mantissa</li>
+            <li><strong>Images</strong>: 3 bytes per pixel (R, G, B), millions of pixels</li>
+            <li><strong>Sound</strong>: amplitude samples, 44,100 per second</li>
+            <li><strong>Video</strong>: 30+ images per second, heavily compressed</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="check" data-check="4">
+        <div class="q">The same 8 bits <code>01100001</code> could mean the number 97, the letter "a", or part of a JPEG. What decides the meaning?</div>
+        <div class="options">
+          <label><input type="radio" name="q4" value="a"/><span>The CPU automatically guesses based on bit patterns.</span></label>
+          <label><input type="radio" name="q4" value="b" data-correct="true"/><span>The program reading the bits. The bits themselves are pure numbers; meaning is always supplied by software.</span></label>
+          <label><input type="radio" name="q4" value="c"/><span>The voltage level inside each transistor.</span></label>
+        </div>
+        <div class="feedback"></div>
+      </div>
+    </section>
+
+    <section id="cpu">
+      <div class="section-header"><span class="section-icon">🧠</span><h2><span class="num">5.</span> Inside the CPU: instructions, pipelines &amp; cores</h2></div>
+      <p>Zooming back in on the CPU: it speaks one language &mdash; <strong>machine code</strong>, a stream of bytes describing very small operations like "add these two registers", "load from this memory address", "jump to this instruction if the result was zero".</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 620 260" width="620" aria-label="Pipelined instruction execution">
+          <g font-family="Inter, system-ui" font-size="12">
+            <text x="310" y="20" text-anchor="middle" fill="#e8eaf0" font-weight="700" font-size="14">Pipelining: 5 instructions in flight at once</text>
+            <g transform="translate(80,40)">
+              <text x="-50" y="22" fill="#8b91a3">stage →</text>
+              <text x="0"   y="22" fill="#22d3ee" font-weight="600">Fetch</text>
+              <text x="80"  y="22" fill="#a78bfa" font-weight="600">Decode</text>
+              <text x="180" y="22" fill="#f59e0b" font-weight="600">Execute</text>
+              <text x="280" y="22" fill="#4ade80" font-weight="600">Memory</text>
+              <text x="380" y="22" fill="#f472b6" font-weight="600">Write-back</text>
+            </g>
+            <g font-family="SF Mono, monospace" font-size="11">
+              <text x="20" y="80"  fill="#8b91a3">cycle 1:</text>
+              <rect x="80" y="65" width="80" height="22" rx="4" fill="#22d3ee"/><text x="120" y="80" text-anchor="middle" fill="#0b0d12" font-weight="600">i1</text>
+              <text x="20" y="108" fill="#8b91a3">cycle 2:</text>
+              <rect x="80"  y="93" width="80" height="22" rx="4" fill="#22d3ee"/><text x="120" y="108" text-anchor="middle" fill="#0b0d12" font-weight="600">i2</text>
+              <rect x="170" y="93" width="80" height="22" rx="4" fill="#a78bfa"/><text x="210" y="108" text-anchor="middle" fill="#0b0d12" font-weight="600">i1</text>
+              <text x="20" y="136" fill="#8b91a3">cycle 3:</text>
+              <rect x="80"  y="121" width="80" height="22" rx="4" fill="#22d3ee"/><text x="120" y="136" text-anchor="middle" fill="#0b0d12" font-weight="600">i3</text>
+              <rect x="170" y="121" width="80" height="22" rx="4" fill="#a78bfa"/><text x="210" y="136" text-anchor="middle" fill="#0b0d12" font-weight="600">i2</text>
+              <rect x="260" y="121" width="80" height="22" rx="4" fill="#f59e0b"/><text x="300" y="136" text-anchor="middle" fill="#0b0d12" font-weight="600">i1</text>
+              <text x="20" y="164" fill="#8b91a3">cycle 4:</text>
+              <rect x="80"  y="149" width="80" height="22" rx="4" fill="#22d3ee"/><text x="120" y="164" text-anchor="middle" fill="#0b0d12" font-weight="600">i4</text>
+              <rect x="170" y="149" width="80" height="22" rx="4" fill="#a78bfa"/><text x="210" y="164" text-anchor="middle" fill="#0b0d12" font-weight="600">i3</text>
+              <rect x="260" y="149" width="80" height="22" rx="4" fill="#f59e0b"/><text x="300" y="164" text-anchor="middle" fill="#0b0d12" font-weight="600">i2</text>
+              <rect x="350" y="149" width="80" height="22" rx="4" fill="#4ade80"/><text x="390" y="164" text-anchor="middle" fill="#0b0d12" font-weight="600">i1</text>
+              <text x="20" y="192" fill="#8b91a3">cycle 5:</text>
+              <rect x="80"  y="177" width="80" height="22" rx="4" fill="#22d3ee"/><text x="120" y="192" text-anchor="middle" fill="#0b0d12" font-weight="600">i5</text>
+              <rect x="170" y="177" width="80" height="22" rx="4" fill="#a78bfa"/><text x="210" y="192" text-anchor="middle" fill="#0b0d12" font-weight="600">i4</text>
+              <rect x="260" y="177" width="80" height="22" rx="4" fill="#f59e0b"/><text x="300" y="192" text-anchor="middle" fill="#0b0d12" font-weight="600">i3</text>
+              <rect x="350" y="177" width="80" height="22" rx="4" fill="#4ade80"/><text x="390" y="192" text-anchor="middle" fill="#0b0d12" font-weight="600">i2</text>
+              <rect x="440" y="177" width="80" height="22" rx="4" fill="#f472b6"/><text x="480" y="192" text-anchor="middle" fill="#0b0d12" font-weight="600">i1</text>
+            </g>
+            <text x="310" y="235" text-anchor="middle" fill="#8b91a3" font-size="11">One instruction completes every cycle, even though each takes 5 cycles end-to-end.</text>
+          </g>
+        </svg>
+        <div class="caption">Pipelining is why modern CPUs feel so fast: they overlap consecutive instructions like an assembly line.</div>
+      </div>
+
+      <div class="threecol">
+        <div class="ministat"><h4>Single core</h4><p>One instruction stream at a time. Pipelining still lets it overlap consecutive operations.</p></div>
+        <div class="ministat"><h4 class="amber">Multi-core</h4><p>Truly parallel work. A modern laptop has 8–16 cores; a server CPU 64–192.</p></div>
+        <div class="ministat"><h4 class="purple">GPU</h4><p>Thousands of simpler cores that do the <em>same</em> thing on different data &mdash; ideal for graphics and matrix maths (the foundation of modern AI).</p></div>
+      </div>
+    </section>
+
+    <section id="os">
+      <div class="section-header"><span class="section-icon">🧩</span><h2><span class="num">6.</span> The operating system</h2></div>
+      <p>If hardware is the orchestra, the operating system is the conductor. It's a special program that <strong>starts first, owns the hardware, and lends it out</strong> to every other program. Linux, macOS, Windows, iOS and Android are all operating systems.</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 600 340" width="600" aria-label="Operating system architecture">
+          <g font-family="Inter, system-ui" font-size="13">
+            <rect x="40" y="20"  width="520" height="80" rx="10" fill="#1c2029" stroke="#22d3ee"/>
+            <text x="300" y="42" text-anchor="middle" fill="#22d3ee" font-weight="700">User space (your programs)</text>
+            <rect x="60"  y="55" width="120" height="32" rx="4" fill="#0a0d14" stroke="#2a2f3a"/>
+            <text x="120" y="76" text-anchor="middle" fill="#e8eaf0">Browser</text>
+            <rect x="200" y="55" width="120" height="32" rx="4" fill="#0a0d14" stroke="#2a2f3a"/>
+            <text x="260" y="76" text-anchor="middle" fill="#e8eaf0">Editor</text>
+            <rect x="340" y="55" width="120" height="32" rx="4" fill="#0a0d14" stroke="#2a2f3a"/>
+            <text x="400" y="76" text-anchor="middle" fill="#e8eaf0">Python script</text>
+            <rect x="475" y="55" width="80" height="32" rx="4" fill="#0a0d14" stroke="#2a2f3a"/>
+            <text x="515" y="76" text-anchor="middle" fill="#e8eaf0">…</text>
+
+            <text x="300" y="125" text-anchor="middle" fill="#f59e0b" font-style="italic" font-size="11">↕ system calls (open, read, write, fork, …)</text>
+
+            <rect x="40" y="140" width="520" height="120" rx="10" fill="#1c2029" stroke="#a78bfa" stroke-width="2"/>
+            <text x="300" y="162" text-anchor="middle" fill="#a78bfa" font-weight="700">Kernel space (the OS)</text>
+            <rect x="60"  y="180" width="110" height="60" rx="6" fill="#0a0d14" stroke="#a78bfa"/>
+            <text x="115" y="205" text-anchor="middle" fill="#a78bfa" font-weight="600">Scheduler</text>
+            <text x="115" y="225" text-anchor="middle" fill="#8b91a3" font-size="10">picks who runs</text>
+            <rect x="180" y="180" width="110" height="60" rx="6" fill="#0a0d14" stroke="#a78bfa"/>
+            <text x="235" y="205" text-anchor="middle" fill="#a78bfa" font-weight="600">Memory</text>
+            <text x="235" y="225" text-anchor="middle" fill="#8b91a3" font-size="10">virtual addresses</text>
+            <rect x="300" y="180" width="110" height="60" rx="6" fill="#0a0d14" stroke="#a78bfa"/>
+            <text x="355" y="205" text-anchor="middle" fill="#a78bfa" font-weight="600">Filesystem</text>
+            <text x="355" y="225" text-anchor="middle" fill="#8b91a3" font-size="10">files &amp; folders</text>
+            <rect x="420" y="180" width="120" height="60" rx="6" fill="#0a0d14" stroke="#a78bfa"/>
+            <text x="480" y="205" text-anchor="middle" fill="#a78bfa" font-weight="600">Drivers</text>
+            <text x="480" y="225" text-anchor="middle" fill="#8b91a3" font-size="10">talk to devices</text>
+
+            <rect x="40" y="280" width="520" height="40" rx="10" fill="#1c2029" stroke="#f472b6"/>
+            <text x="300" y="305" text-anchor="middle" fill="#f472b6" font-weight="700">Hardware (CPU, RAM, disk, network card, GPU)</text>
+          </g>
+        </svg>
+        <div class="caption">The OS sits between your programs and the hardware. Programs can't touch the hardware directly &mdash; they ask the kernel.</div>
+      </div>
+
+      <div class="lesson-card">
+        <h3>What the OS gives you</h3>
+        <ul>
+          <li><strong>Multitasking</strong> &mdash; the scheduler rotates between dozens of running programs (<em>processes</em>) so each gets a slice of the CPU, faster than you can notice.</li>
+          <li><strong>Memory isolation</strong> &mdash; each process gets its own private "virtual" address space. One program crashing can't corrupt another.</li>
+          <li><strong>A filesystem</strong> &mdash; the abstraction of named files and folders, on top of a raw disk that only understands "sector 14,829,001".</li>
+          <li><strong>Permissions &amp; users</strong> &mdash; who can read what, who can install what.</li>
+          <li><strong>Device drivers</strong> &mdash; one common interface ("write to a file") that works for SSDs, USB sticks, network shares.</li>
+        </ul>
+        <div class="key">🔑 <strong>Process</strong> = a running program with its own memory. <strong>Thread</strong> = a unit of execution within a process. One process can have many threads sharing the same memory.</div>
+      </div>
+
+      <div class="check" data-check="5">
+        <div class="q">Two programs both want to write to the same file at the same time. Whose job is it to make sure that doesn't corrupt the file?</div>
+        <div class="options">
+          <label><input type="radio" name="q5" value="a"/><span>The CPU &mdash; it locks the file in hardware.</span></label>
+          <label><input type="radio" name="q5" value="b" data-correct="true"/><span>The operating system &mdash; the kernel mediates all access to shared resources like files.</span></label>
+          <label><input type="radio" name="q5" value="c"/><span>The user, by switching to the other program first.</span></label>
+        </div>
+        <div class="feedback"></div>
+      </div>
+    </section>
+
+    <section id="networks">
+      <div class="section-header"><span class="section-icon">🌐</span><h2><span class="num">7.</span> Networks: how machines talk</h2></div>
+      <p>When you load a web page, your browser doesn't magically reach across the internet. Roughly <strong>15 layers of software and hardware</strong> cooperate to move the bytes &mdash; and they too are organised as a stack.</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 620 320" width="620" aria-label="Network protocol stack">
+          <g font-family="Inter, system-ui" font-size="12">
+            <text x="160" y="25" text-anchor="middle" fill="#e8eaf0" font-weight="700">Your laptop</text>
+            <rect x="40" y="40"  width="240" height="40" rx="6" fill="#22d3ee" opacity="0.9"/>
+            <text x="160" y="65" text-anchor="middle" fill="#0b0d12" font-weight="600">HTTP / WebSocket  (the message)</text>
+            <rect x="40" y="85"  width="240" height="40" rx="6" fill="#a78bfa" opacity="0.9"/>
+            <text x="160" y="110" text-anchor="middle" fill="#0b0d12" font-weight="600">TLS  (encryption, the "S" in HTTPS)</text>
+            <rect x="40" y="130" width="240" height="40" rx="6" fill="#4ade80" opacity="0.9"/>
+            <text x="160" y="155" text-anchor="middle" fill="#0b0d12" font-weight="600">TCP / UDP  (reliable streams or packets)</text>
+            <rect x="40" y="175" width="240" height="40" rx="6" fill="#f59e0b" opacity="0.9"/>
+            <text x="160" y="200" text-anchor="middle" fill="#0b0d12" font-weight="600">IP  (addresses &amp; routing)</text>
+            <rect x="40" y="220" width="240" height="40" rx="6" fill="#f472b6" opacity="0.9"/>
+            <text x="160" y="245" text-anchor="middle" fill="#0b0d12" font-weight="600">Ethernet / Wi-Fi  (physical signals)</text>
+
+            <text x="460" y="25" text-anchor="middle" fill="#e8eaf0" font-weight="700">Web server</text>
+            <rect x="340" y="40"  width="240" height="40" rx="6" fill="#22d3ee" opacity="0.9"/>
+            <text x="460" y="65" text-anchor="middle" fill="#0b0d12" font-weight="600">HTTP / WebSocket</text>
+            <rect x="340" y="85"  width="240" height="40" rx="6" fill="#a78bfa" opacity="0.9"/>
+            <text x="460" y="110" text-anchor="middle" fill="#0b0d12" font-weight="600">TLS</text>
+            <rect x="340" y="130" width="240" height="40" rx="6" fill="#4ade80" opacity="0.9"/>
+            <text x="460" y="155" text-anchor="middle" fill="#0b0d12" font-weight="600">TCP / UDP</text>
+            <rect x="340" y="175" width="240" height="40" rx="6" fill="#f59e0b" opacity="0.9"/>
+            <text x="460" y="200" text-anchor="middle" fill="#0b0d12" font-weight="600">IP</text>
+            <rect x="340" y="220" width="240" height="40" rx="6" fill="#f472b6" opacity="0.9"/>
+            <text x="460" y="245" text-anchor="middle" fill="#0b0d12" font-weight="600">Ethernet / Wi-Fi</text>
+
+            <path d="M280 240 Q310 290 340 240" stroke="#8b91a3" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+            <text x="310" y="305" text-anchor="middle" fill="#8b91a3" font-style="italic" font-size="11">cables, fibre, radio &mdash; passing through routers along the way</text>
+          </g>
+        </svg>
+        <div class="caption">The data goes <em>down</em> the stack on the sending side (wrapped in headers at each layer), across the wire, then <em>up</em> the stack on the other side.</div>
+      </div>
+
+      <div class="threecol">
+        <div class="ministat"><h4>IP address</h4><p>Like a postal address for a machine. <code>192.168.1.5</code> or <code>2a01:4b00:…</code>. DNS turns <code>google.com</code> into one of these.</p></div>
+        <div class="ministat"><h4 class="purple">TCP vs UDP</h4><p><strong>TCP</strong> = reliable, ordered stream (the web, email). <strong>UDP</strong> = fast packets, no guarantees (video calls, games).</p></div>
+        <div class="ministat"><h4 class="amber">HTTPS</h4><p>HTTP over TLS. The browser and server agree on an encryption key so nobody between them can read or tamper with the bytes.</p></div>
+      </div>
+    </section>
+
+    <section id="compile">
+      <div class="section-header"><span class="section-icon">🔧</span><h2><span class="num">8.</span> From source code to a running program</h2></div>
+      <p>You write <code>print("hello")</code>. The CPU can't read that. So how does it get from a text file to electrons moving in silicon?</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 620 220" width="620" aria-label="Compilation pipeline">
+          <g font-family="Inter, system-ui" font-size="12">
+            <rect x="20"  y="60" width="100" height="60" rx="8" fill="#1c2029" stroke="#22d3ee"/>
+            <text x="70"  y="85"  text-anchor="middle" fill="#22d3ee" font-weight="600">Source</text>
+            <text x="70"  y="105" text-anchor="middle" fill="#8b91a3" font-size="10">main.c, .py …</text>
+
+            <rect x="150" y="60" width="100" height="60" rx="8" fill="#1c2029" stroke="#a78bfa"/>
+            <text x="200" y="85"  text-anchor="middle" fill="#a78bfa" font-weight="600">Compiler</text>
+            <text x="200" y="105" text-anchor="middle" fill="#8b91a3" font-size="10">parse → optimise</text>
+
+            <rect x="280" y="60" width="100" height="60" rx="8" fill="#1c2029" stroke="#f59e0b"/>
+            <text x="330" y="85"  text-anchor="middle" fill="#f59e0b" font-weight="600">Assembly</text>
+            <text x="330" y="105" text-anchor="middle" fill="#8b91a3" font-size="10">human-readable</text>
+
+            <rect x="410" y="60" width="100" height="60" rx="8" fill="#1c2029" stroke="#4ade80"/>
+            <text x="460" y="85"  text-anchor="middle" fill="#4ade80" font-weight="600">Linker</text>
+            <text x="460" y="105" text-anchor="middle" fill="#8b91a3" font-size="10">+ libraries</text>
+
+            <rect x="530" y="60" width="80"  height="60" rx="8" fill="#f472b6"/>
+            <text x="570" y="85"  text-anchor="middle" fill="#0b0d12" font-weight="700">Binary</text>
+            <text x="570" y="105" text-anchor="middle" fill="#0b0d12" font-size="10">.exe / a.out</text>
+
+            <g stroke="#8b91a3" stroke-width="1.5" fill="none">
+              <path d="M120 90 L150 90" marker-end="url(#ar)"/>
+              <path d="M250 90 L280 90" marker-end="url(#ar)"/>
+              <path d="M380 90 L410 90" marker-end="url(#ar)"/>
+              <path d="M510 90 L530 90" marker-end="url(#ar)"/>
+            </g>
+            <defs><marker id="ar" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="#8b91a3"/></marker></defs>
+
+            <text x="310" y="170" text-anchor="middle" fill="#e8eaf0" font-weight="600">…then the OS loads the binary into RAM and the CPU starts fetching instructions.</text>
+          </g>
+        </svg>
+        <div class="caption">The classic compilation pipeline for languages like C, Rust, Go.</div>
+      </div>
+
+      <div class="twocol">
+        <div class="lesson-card">
+          <h3>Compiled languages</h3>
+          <p><strong>C, C++, Rust, Go, Swift.</strong> The whole program is translated to machine code <em>once</em>, ahead of time. Fast at runtime, but you have to recompile for each CPU architecture.</p>
+        </div>
+        <div class="lesson-card">
+          <h3 class="purple">Interpreted languages</h3>
+          <p><strong>Python, Ruby, JavaScript.</strong> A separate program (the interpreter) reads your source <em>at runtime</em> and executes it step by step. Slower per operation, but you can run the exact same file on Linux, macOS, Windows without changes.</p>
+        </div>
+      </div>
+      <div class="lesson-card">
+        <h3 class="amber">In between: bytecode &amp; JIT</h3>
+        <p>Java, C# and modern JavaScript compile to <em>bytecode</em> &mdash; a portable in-between language &mdash; which a virtual machine then runs. Hot code paths are further compiled to machine code on the fly ("just-in-time"), so you get the portability of interpretation with the speed of compilation.</p>
+      </div>
+    </section>
+
+    <section id="sdlc">
+      <div class="section-header"><span class="section-icon">🔄</span><h2><span class="num">9.</span> SDLC: how software actually gets built</h2></div>
+      <p>The <strong>Software Development Life Cycle</strong> is the recipe for turning an idea into a deployed, maintained product. It's the same six phases at every company in the world &mdash; only the labels and ceremony change.</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 600 420" width="600" aria-label="SDLC cycle">
+          <g font-family="Inter, system-ui" font-size="12">
+            <circle cx="300" cy="210" r="160" fill="none" stroke="#2a2f3a" stroke-dasharray="3 4"/>
+            <g>
+              <circle cx="300" cy="50"  r="50" fill="#22d3ee"/>
+              <text x="300" y="48"  text-anchor="middle" fill="#0b0d12" font-weight="700">1. Requirements</text>
+              <text x="300" y="65"  text-anchor="middle" fill="#0b0d12" font-size="10">what to build, for whom</text>
+
+              <circle cx="438" cy="130" r="50" fill="#a78bfa"/>
+              <text x="438" y="128" text-anchor="middle" fill="#0b0d12" font-weight="700">2. Design</text>
+              <text x="438" y="145" text-anchor="middle" fill="#0b0d12" font-size="10">architecture, APIs, UX</text>
+
+              <circle cx="438" cy="290" r="50" fill="#4ade80"/>
+              <text x="438" y="288" text-anchor="middle" fill="#0b0d12" font-weight="700">3. Implement</text>
+              <text x="438" y="305" text-anchor="middle" fill="#0b0d12" font-size="10">write the code</text>
+
+              <circle cx="300" cy="370" r="50" fill="#f59e0b"/>
+              <text x="300" y="368" text-anchor="middle" fill="#0b0d12" font-weight="700">4. Test</text>
+              <text x="300" y="385" text-anchor="middle" fill="#0b0d12" font-size="10">unit, integration, manual</text>
+
+              <circle cx="162" cy="290" r="50" fill="#f472b6"/>
+              <text x="162" y="288" text-anchor="middle" fill="#0b0d12" font-weight="700">5. Deploy</text>
+              <text x="162" y="305" text-anchor="middle" fill="#0b0d12" font-size="10">ship to users</text>
+
+              <circle cx="162" cy="130" r="50" fill="#ef4444"/>
+              <text x="162" y="128" text-anchor="middle" fill="#fff" font-weight="700">6. Maintain</text>
+              <text x="162" y="145" text-anchor="middle" fill="#fff" font-size="10">bugs, updates, scaling</text>
+            </g>
+            <g stroke="#8b91a3" stroke-width="2" fill="none">
+              <path d="M349 65  Q410 75  410 105" marker-end="url(#sd)"/>
+              <path d="M450 180 Q455 230 450 250" marker-end="url(#sd)"/>
+              <path d="M410 333 Q380 360 350 360" marker-end="url(#sd)"/>
+              <path d="M250 360 Q220 360 195 333" marker-end="url(#sd)"/>
+              <path d="M150 250 Q145 215 150 180" marker-end="url(#sd)"/>
+              <path d="M195 105 Q220 75 250 65" marker-end="url(#sd)"/>
+            </g>
+            <defs><marker id="sd" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="#8b91a3"/></marker></defs>
+            <text x="300" y="215" text-anchor="middle" fill="#e8eaf0" font-weight="700" font-size="14">SDLC</text>
+            <text x="300" y="232" text-anchor="middle" fill="#8b91a3" font-size="11">a loop, not a line</text>
+          </g>
+        </svg>
+        <div class="caption">A modern team runs this whole cycle every few weeks &mdash; sometimes every day.</div>
+      </div>
+
+      <div class="lesson-card">
+        <h3>Two flavours of the cycle</h3>
+        <p><strong>Waterfall</strong> goes through the phases once, in order, for a big release. Good for fixed-scope projects (aircraft software, regulated industries). Risky for anything where requirements change.</p>
+        <p><strong>Agile</strong> runs the whole loop in 1–4 week "sprints", shipping a small slice of value each time. Most modern software is built this way. <strong>DevOps</strong> takes it further: automate the deploy and feedback steps so the cycle can run multiple times per day.</p>
+        <div class="key">🔑 <strong>CI/CD</strong> &mdash; "Continuous Integration / Continuous Deployment". Every code change automatically runs tests and (if they pass) ships to users. This is the DevOps engine that makes daily releases possible.</div>
+      </div>
+
+      <div class="check" data-check="6">
+        <div class="q">Why is "Maintain" not just the end of the cycle, but its own ongoing phase?</div>
+        <div class="options">
+          <label><input type="radio" name="q6" value="a"/><span>Because someone has to keep the office plants alive.</span></label>
+          <label><input type="radio" name="q6" value="b" data-correct="true"/><span>Because software interacts with a changing world &mdash; new bugs surface, dependencies update, scale grows, requirements shift. Most of a product's life is in maintenance.</span></label>
+          <label><input type="radio" name="q6" value="c"/><span>Because hardware wears out and the code must be retyped.</span></label>
+        </div>
+        <div class="feedback"></div>
+      </div>
+    </section>
+
+    <section id="skills">
+      <div class="section-header"><span class="section-icon">🛠️</span><h2><span class="num">10.</span> Essential skills &amp; concepts</h2></div>
+      <p>Beyond the textbook stack, here's what actually fills a developer's day. None of these are languages &mdash; they're <em>practices</em>.</p>
+
+      <div class="threecol">
+        <div class="ministat"><h4>Version control</h4><p>Git is the universal time-machine + collaboration layer. Branches, commits, pull requests. <a href="git-tutorial.html" style="color:var(--accent2);">→ Git tutorial</a></p></div>
+        <div class="ministat"><h4 class="amber">Testing</h4><p>Unit tests (one function), integration tests (modules together), end-to-end tests (the whole product). Without them, every change is a gamble.</p></div>
+        <div class="ministat"><h4 class="purple">Debugging</h4><p>Reading stack traces, using a debugger, adding logging, isolating the smallest reproduction. A core skill no course teaches; it's earned.</p></div>
+        <div class="ministat"><h4 class="green">Code review</h4><p>Reading other people's code, leaving constructive comments, taking feedback gracefully. The single biggest quality lever on most teams.</p></div>
+        <div class="ministat"><h4>Documentation</h4><p>README, inline comments, ADRs (architecture decision records), runbooks. The code says <em>what</em>; docs say <em>why</em>.</p></div>
+        <div class="ministat"><h4 class="amber">Refactoring</h4><p>Changing the shape of code without changing its behaviour. Done in tiny safe steps, always backed by tests.</p></div>
+        <div class="ministat"><h4 class="purple">Security basics</h4><p>Never trust user input. Hash passwords, don't store them. Use HTTPS. Apply the principle of least privilege.</p></div>
+        <div class="ministat"><h4 class="green">Performance</h4><p>Measure before optimising. Big-O for algorithms; profilers for hot paths; cache-friendliness for tight loops.</p></div>
+        <div class="ministat"><h4>Communication</h4><p>Writing a clear bug report, explaining a tradeoff in a PR, saying "I don't know" early. The non-technical multiplier on everything else.</p></div>
+      </div>
+
+      <div class="lesson-card">
+        <h3 class="amber">The mindset bit</h3>
+        <ul>
+          <li><strong>Read more code than you write.</strong> Every codebase you'll join is bigger than what you can produce in a lifetime; reading skill scales.</li>
+          <li><strong>Get comfortable being stuck.</strong> A senior developer isn't someone who's never stuck; it's someone who has good tactics for getting unstuck quickly.</li>
+          <li><strong>Use AI as a force multiplier, not a crutch.</strong> Ask <em>why</em> the answer is right, don't just paste it.</li>
+          <li><strong>Ship small, ship often.</strong> A 10-line PR that ships beats a 1000-line PR that sits in review.</li>
+        </ul>
+      </div>
+
+      <div class="check" data-check="7">
+        <div class="q">A senior developer says "always have a green test before refactoring." What's the reasoning?</div>
+        <div class="options">
+          <label><input type="radio" name="q7" value="a"/><span>Green is the most calming colour.</span></label>
+          <label><input type="radio" name="q7" value="b" data-correct="true"/><span>Without a test that already passes, you can't tell whether your refactor broke something or whether it was already broken.</span></label>
+          <label><input type="radio" name="q7" value="c"/><span>Tests run faster when the screen is green.</span></label>
+        </div>
+        <div class="feedback"></div>
+      </div>
+    </section>
+
+    <section id="reflection">
+      <div class="section-header"><span class="section-icon">🪞</span><h2><span class="num">11.</span> Where to go next</h2></div>
+      <p>You've now seen the whole stack from electrons to deployment pipelines. Here's how to deepen each piece, using the rest of this library and a few external rabbit-holes:</p>
+
+      <div class="twocol">
+        <div class="lesson-card">
+          <h3>Stay in this library</h3>
+          <ul>
+            <li><a href="git-tutorial.html" style="color:var(--accent2);">Git tutorial</a> &mdash; the version-control layer</li>
+            <li><a href="python-tutorial.html" style="color:var(--accent2);">Python tutorial</a> &mdash; your first interpreted language</li>
+            <li><a href="javascript-tutorial.html" style="color:var(--accent2);">JavaScript tutorial</a> &mdash; the language of the browser</li>
+            <li><a href="math-for-llms-tutorial.html" style="color:var(--accent2);">Maths for LLMs</a> &mdash; the maths underneath modern AI</li>
+            <li><a href="llm-from-scratch-tutorial.html" style="color:var(--accent2);">Build an LLM from scratch</a> &mdash; a runnable mini-GPT</li>
+          </ul>
+        </div>
+        <div class="lesson-card">
+          <h3 class="purple">External rabbit-holes</h3>
+          <ul>
+            <li><strong>"Crafting Interpreters"</strong> (free online) &mdash; build a working programming language.</li>
+            <li><strong>"Computer Systems: A Programmer's Perspective"</strong> &mdash; the bible for the lower half of the stack.</li>
+            <li><strong>"Designing Data-Intensive Applications"</strong> &mdash; the bible for the upper half.</li>
+            <li><strong>nand2tetris</strong> &mdash; build a working computer from NAND gates up to a Tetris-playing OS.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>Single-file tutorial · No tracking · No build step. Source lives in <code>tuts/computer-fundamentals-tutorial.html</code>. <span style="color:var(--accent);">⚙</span></p>
+  </footer>
+
+  <script>
+    // ── Binary bit widget ──
+    (function () {
+      const bits = [128, 64, 32, 16, 8, 4, 2, 1];
+      const state = bits.map(() => 0);
+      const root = document.getElementById('bits');
+      const read = document.getElementById('bitreadout');
+      bits.forEach((v, i) => {
+        const el = document.createElement('div');
+        el.className = 'bit';
+        el.innerHTML = `<div class="val">0</div><div class="pow">${v}</div>`;
+        el.addEventListener('click', () => {
+          state[i] = state[i] ? 0 : 1;
+          el.classList.toggle('on', !!state[i]);
+          el.querySelector('.val').textContent = state[i];
+          const dec = state.reduce((a, b, j) => a + b * bits[j], 0);
+          const hex = dec.toString(16).toUpperCase().padStart(2, '0');
+          const bin = state.join('');
+          read.textContent = `decimal: ${dec}  ·  hex: 0x${hex}  ·  binary: ${bin}` + (dec >= 32 && dec < 127 ? `  ·  ASCII: "${String.fromCharCode(dec)}"` : '');
+        });
+        root.appendChild(el);
+      });
+    })();
+
+    // ── Quizzes ──
+    const TOTAL = 7;
+    let done = 0;
+    const fill = document.getElementById('progress-fill');
+    const score = document.getElementById('score-display');
+    document.querySelectorAll('.check').forEach(box => {
+      const fb = box.querySelector('.feedback');
+      box.querySelectorAll('input[type="radio"]').forEach(input => {
+        input.addEventListener('change', () => {
+          const ok = input.dataset.correct === 'true';
+          box.querySelectorAll('label').forEach(l => {
+            const inp = l.querySelector('input');
+            inp.disabled = true;
+            if (inp.dataset.correct === 'true') l.classList.add('correct');
+            else if (inp === input && !ok) l.classList.add('wrong');
+          });
+          fb.textContent = ok ? '✓ Correct.' : '✗ Not quite — the highlighted answer is the right one.';
+          fb.classList.add(ok ? 'ok' : 'bad');
+          if (!box.dataset.done) {
+            box.dataset.done = '1';
+            done++;
+            fill.style.width = (done / TOTAL * 100) + '%';
+            score.textContent = `${done} / ${TOTAL} checks complete`;
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
