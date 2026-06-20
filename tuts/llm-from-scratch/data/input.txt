@@ -1,0 +1,168 @@
+HAMLET:
+To be, or not to be, that is the question:
+Whether 'tis nobler in the mind to suffer
+The slings and arrows of outrageous fortune,
+Or to take arms against a sea of troubles
+And by opposing end them. To die-to sleep,
+No more; and by a sleep to say we end
+The heart-ache and the thousand natural shocks
+That flesh is heir to: 'tis a consummation
+Devoutly to be wish'd. To die, to sleep;
+To sleep, perchance to dream-ay, there's the rub:
+For in that sleep of death what dreams may come,
+When we have shuffled off this mortal coil,
+Must give us pause-there's the respect
+That makes calamity of so long life.
+
+HORATIO:
+My lord, I came to see your father's funeral.
+
+HAMLET:
+I pray thee, do not mock me, fellow-student.
+I think it was to see my mother's wedding.
+
+HORATIO:
+Indeed, my lord, it followed hard upon.
+
+HAMLET:
+Thrift, thrift, Horatio! the funeral baked meats
+Did coldly furnish forth the marriage tables.
+Would I had met my dearest foe in heaven
+Or ever I had seen that day, Horatio!
+
+MACBETH:
+Tomorrow, and tomorrow, and tomorrow,
+Creeps in this petty pace from day to day,
+To the last syllable of recorded time;
+And all our yesterdays have lighted fools
+The way to dusty death. Out, out, brief candle!
+Life's but a walking shadow, a poor player
+That struts and frets his hour upon the stage
+And then is heard no more. It is a tale
+Told by an idiot, full of sound and fury,
+Signifying nothing.
+
+LADY MACBETH:
+Out, damned spot! out, I say!-One; two: why,
+then 'tis time to do't. Hell is murky.-Fie, my
+lord, fie! a soldier, and afeard? What need we
+fear who knows it, when none can call our power
+to account?-Yet who would have thought the old man
+to have had so much blood in him?
+
+ROMEO:
+But, soft! what light through yonder window breaks?
+It is the east, and Juliet is the sun.
+Arise, fair sun, and kill the envious moon,
+Who is already sick and pale with grief,
+That thou her maid art far more fair than she.
+
+JULIET:
+O Romeo, Romeo! wherefore art thou Romeo?
+Deny thy father and refuse thy name;
+Or, if thou wilt not, be but sworn my love,
+And I'll no longer be a Capulet.
+
+ROMEO:
+Shall I hear more, or shall I speak at this?
+
+JULIET:
+'Tis but thy name that is my enemy;
+Thou art thyself, though not a Montague.
+What's Montague? it is nor hand, nor foot,
+Nor arm, nor face, nor any other part
+Belonging to a man. O, be some other name!
+What's in a name? that which we call a rose
+By any other name would smell as sweet.
+
+PROSPERO:
+Our revels now are ended. These our actors,
+As I foretold you, were all spirits and
+Are melted into air, into thin air:
+And, like the baseless fabric of this vision,
+The cloud-capp'd towers, the gorgeous palaces,
+The solemn temples, the great globe itself,
+Yea, all which it inherit, shall dissolve,
+And, like this insubstantial pageant faded,
+Leave not a rack behind. We are such stuff
+As dreams are made on; and our little life
+Is rounded with a sleep.
+
+PORTIA:
+The quality of mercy is not strain'd,
+It droppeth as the gentle rain from heaven
+Upon the place beneath: it is twice blest;
+It blesseth him that gives and him that takes:
+'Tis mightiest in the mightiest: it becomes
+The throned monarch better than his crown.
+
+JAQUES:
+All the world's a stage,
+And all the men and women merely players;
+They have their exits and their entrances,
+And one man in his time plays many parts,
+His acts being seven ages. At first the infant,
+Mewling and puking in the nurse's arms.
+Then the whining school-boy, with his satchel
+And shining morning face, creeping like snail
+Unwillingly to school. And then the lover,
+Sighing like furnace, with a woeful ballad
+Made to his mistress' eyebrow.
+
+HENRY V:
+Once more unto the breach, dear friends, once more;
+Or close the wall up with our English dead.
+In peace there's nothing so becomes a man
+As modest stillness and humility:
+But when the blast of war blows in our ears,
+Then imitate the action of the tiger;
+Stiffen the sinews, summon up the blood,
+Disguise fair nature with hard-favour'd rage.
+
+RICHARD:
+Now is the winter of our discontent
+Made glorious summer by this sun of York;
+And all the clouds that lour'd upon our house
+In the deep bosom of the ocean buried.
+Now are our brows bound with victorious wreaths;
+Our bruised arms hung up for monuments;
+Our stern alarums changed to merry meetings,
+Our dreadful marches to delightful measures.
+
+KING LEAR:
+Blow, winds, and crack your cheeks! rage! blow!
+You cataracts and hurricanoes, spout
+Till you have drench'd our steeples, drown'd the cocks!
+You sulphurous and thought-executing fires,
+Vaunt-couriers to oak-cleaving thunderbolts,
+Singe my white head! And thou, all-shaking thunder,
+Smite flat the thick rotundity o' the world!
+
+OTHELLO:
+It is the cause, it is the cause, my soul,-
+Let me not name it to you, you chaste stars!-
+It is the cause. Yet I'll not shed her blood;
+Nor scar that whiter skin of hers than snow,
+And smooth as monumental alabaster.
+Yet she must die, else she'll betray more men.
+Put out the light, and then put out the light.
+
+BRUTUS:
+Friends, Romans, countrymen, lend me your ears;
+I come to bury Caesar, not to praise him.
+The evil that men do lives after them;
+The good is oft interred with their bones;
+So let it be with Caesar. The noble Brutus
+Hath told you Caesar was ambitious:
+If it were so, it was a grievous fault,
+And grievously hath Caesar answer'd it.
+
+PUCK:
+If we shadows have offended,
+Think but this, and all is mended,
+That you have but slumber'd here
+While these visions did appear.
+And this weak and idle theme,
+No more yielding but a dream,
+Gentles, do not reprehend:
+If you pardon, we will mend.

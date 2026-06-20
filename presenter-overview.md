@@ -166,20 +166,24 @@ Don't sit stuck for more than 15 minutes without doing one of these.
 ```
 tuts/  — self-contained interactive tutorials
 
-  git-tutorial.html             The basics + branching + GitHub flow
-  python-tutorial.html          Variables, lists, functions, FizzBuzz
-  javascript-tutorial.html      Variables, arrays, arrow funcs, DOM
-  math-for-llms-tutorial.html   Vectors, dot products, matrices,
-                                derivatives & gradient descent
+  git-tutorial.html              Basics + branching + GitHub flow
+  python-tutorial.html           Variables, lists, functions, FizzBuzz
+  javascript-tutorial.html       Variables, arrays, arrow funcs, DOM
+  math-for-llms-tutorial.html    Vectors, dot products, matrices,
+                                 derivatives & gradient descent
+  llm-from-scratch-tutorial.html Build a character-level GPT in
+                                 Python + uv, six small chapters
 
-Open any file in a browser. No install. No build.
+Open any HTML file in a browser. No install. No build.
 Coding tuts: Concepts → Exercises → Quiz → Cheat Sheet → Summary.
 Maths tut:   Brilliant-style — drag vectors, slide matrices, step
              gradient descent on a loss curve.
+LLM tut:     Runnable Python project (tuts/llm-from-scratch/) —
+             tokenize → bigram → attention → transformer → sample.
 ```
 
 **Speaker notes:**
-"If anyone feels rusty on Git, Python, or JavaScript, point them at the `tuts/` folder. Each tutorial is a single HTML file — no install, no build, just double-click to open in a browser. The three coding tutorials give concepts, exercises and a 7-question quiz with instant feedback (~30–45 min each). The fourth, `math-for-llms-tutorial.html`, is for anyone curious about how AI actually works under the hood — drag vectors, change matrices, run gradient descent step-by-step. Useful on Day 1 if setup finishes early, and any time later when someone hits a fundamentals wall."
+"If anyone feels rusty on Git, Python, or JavaScript, point them at the `tuts/` folder. Each tutorial is a single HTML file — no install, no build, just double-click to open in a browser. The three coding tutorials give concepts, exercises and a 7-question quiz with instant feedback (~30–45 min each). `math-for-llms-tutorial.html` is for anyone curious about the maths behind AI — drag vectors, change matrices, run gradient descent step-by-step. `llm-from-scratch-tutorial.html` is for anyone who wants to see how an LLM is actually built — it walks through six small Python files (managed by `uv`) that progressively build a working character-level GPT. Useful on Day 1 if setup finishes early, and any time later when someone hits a fundamentals wall."
 
 ---
 

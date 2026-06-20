@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Build an LLM from scratch — Interactive</title>
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --card: #242424;
+      --border: #333;
+      --accent: #f59e0b;
+      --accent2: #4ec9b0;
+      --accent3: #a78bfa;
+      --text: #e8e8e8;
+      --muted: #888;
+      --success: #4caf50;
+      --code-bg: #0d1117;
+      --keyword: #ff7b72;
+      --string: #a5d6ff;
+      --comment: #8b949e;
+      --func: #d2a8ff;
+      --num: #79c0ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .nav-logo { font-size: 1.4rem; font-weight: 700; color: var(--accent); padding: 1rem 0; margin-right: auto; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 0.85rem; padding: 0.4rem 0.7rem; border-radius: 6px; transition: all 0.2s; }
+    nav a:hover { color: var(--text); background: var(--card); }
+
+    .hero { background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 60%, #2a1a05 100%); border-bottom: 1px solid var(--border); padding: 4rem 2rem 3rem; text-align: center; }
+    .hero h1 { font-size: 2.8rem; font-weight: 800; margin-bottom: 1rem; }
+    .hero h1 span { color: var(--accent); }
+    .hero p { color: var(--muted); font-size: 1.1rem; max-width: 680px; margin: 0 auto 2rem; }
+    .badge { display: inline-block; background: var(--accent); color: #0f0f0f; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 20px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .hero-badges { display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap; }
+    .badge.green { background: var(--success); color: #fff; }
+    .badge.teal { background: var(--accent2); color: #0f0f0f; }
+    .badge.purple { background: var(--accent3); color: #0f0f0f; }
+
+    .container { max-width: 920px; margin: 0 auto; padding: 2rem; }
+
+    .progress-sticky { position: sticky; top: 56px; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.6rem 1rem; z-index: 90; }
+    .progress-bar { height: 6px; background: var(--card); border-radius: 3px; overflow: hidden; }
+    #progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.4s; }
+    #score-display { color: var(--muted); font-size: 0.85rem; margin-top: 0.4rem; text-align: center; }
+
+    section { margin-bottom: 4rem; }
+    .section-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+    .section-icon { font-size: 1.6rem; }
+    .section-header h2 { font-size: 1.7rem; }
+    .section-header .num { color: var(--accent); font-weight: 800; }
+    section p { margin-bottom: 1rem; color: var(--text); }
+    section p.muted { color: var(--muted); font-size: 0.95rem; }
+    section ul, section ol { margin: 0 0 1rem 1.5rem; color: var(--text); }
+    section li { margin-bottom: 0.4rem; }
+
+    .lesson-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .lesson-card h3 { color: var(--accent); margin-bottom: 0.8rem; font-size: 1.15rem; }
+    .lesson-card .intuition { background: rgba(245,158,11,0.08); border-left: 3px solid var(--accent); padding: 0.7rem 1rem; margin: 1rem 0; border-radius: 4px; font-size: 0.95rem; }
+    .lesson-card .llm-link { background: rgba(78,201,176,0.08); border-left: 3px solid var(--accent2); padding: 0.7rem 1rem; margin: 1rem 0; border-radius: 4px; font-size: 0.95rem; }
+    .lesson-card .llm-link strong { color: var(--accent2); }
+    .lesson-card .warn { background: rgba(167,139,250,0.08); border-left: 3px solid var(--accent3); padding: 0.7rem 1rem; margin: 1rem 0; border-radius: 4px; font-size: 0.95rem; }
+
+    .check { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; margin-top: 1.2rem; }
+    .check .q { font-weight: 600; margin-bottom: 0.8rem; color: var(--text); }
+    .check .options { display: flex; flex-direction: column; gap: 0.5rem; }
+    .check label { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.8rem; background: var(--card); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: background 0.15s; }
+    .check label:hover { background: #2c2c2c; }
+    .check input[type="radio"]:disabled + span { opacity: 0.7; }
+    .check label.correct { border-color: var(--success); background: rgba(76,175,80,0.12); }
+    .check label.wrong { border-color: #e57373; background: rgba(229,115,115,0.12); }
+    .check .feedback { margin-top: 0.8rem; font-size: 0.9rem; color: var(--muted); min-height: 1.2em; }
+    .check .feedback.ok { color: var(--success); }
+    .check .feedback.bad { color: #e57373; }
+
+    code, .mono { font-family: 'SF Mono', 'Consolas', monospace; background: var(--code-bg); padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; color: var(--accent2); }
+
+    pre.code { background: var(--code-bg); color: var(--text); padding: 1rem 1.2rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; font-family: 'SF Mono', 'Consolas', monospace; font-size: 0.85rem; line-height: 1.55; border: 1px solid var(--border); }
+    pre.code .kw { color: var(--keyword); }
+    pre.code .st { color: var(--string); }
+    pre.code .cm { color: var(--comment); font-style: italic; }
+    pre.code .fn { color: var(--func); }
+    pre.code .nm { color: var(--num); }
+    pre.code .shell-prompt { color: var(--muted); user-select: none; }
+    pre.output { background: #050505; color: #b8b8b8; padding: 1rem 1.2rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; font-family: 'SF Mono', 'Consolas', monospace; font-size: 0.82rem; line-height: 1.5; border: 1px solid var(--border); white-space: pre-wrap; }
+    pre.output .label { color: var(--accent); }
+
+    .file-tag { display: inline-block; font-family: 'SF Mono', 'Consolas', monospace; font-size: 0.78rem; color: var(--accent3); background: rgba(167,139,250,0.1); border: 1px solid rgba(167,139,250,0.3); padding: 0.15rem 0.6rem; border-radius: 4px; margin-bottom: 0.4rem; }
+
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+    .summary-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+    .summary-card h4 { color: var(--accent2); margin-bottom: 0.4rem; font-size: 0.95rem; }
+    .summary-card p { font-size: 0.9rem; color: var(--muted); }
+
+    .widget { background: var(--surface); border-radius: 8px; padding: 1rem; margin: 1rem 0; border: 1px solid var(--border); }
+    .widget .controls { display: flex; gap: 0.8rem; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; font-size: 0.9rem; color: var(--muted); }
+    .widget input[type="range"] { accent-color: var(--accent); flex: 1; min-width: 140px; }
+    .widget .out { font-family: 'SF Mono', 'Consolas', monospace; font-size: 0.82rem; color: var(--text); white-space: pre-wrap; background: var(--code-bg); padding: 0.8rem; border-radius: 6px; min-height: 6em; }
+
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-logo">⚙ LLM from scratch</div>
+    <a href="#intro">Intro</a>
+    <a href="#setup">Setup</a>
+    <a href="#ch1">1. Vocab</a>
+    <a href="#ch2">2. Bigram</a>
+    <a href="#ch3">3. Learned</a>
+    <a href="#ch4">4. Attention</a>
+    <a href="#ch5">5. Transformer</a>
+    <a href="#ch6">6. Sampling</a>
+    <a href="#reflection">Reflection</a>
+  </nav>
+
+  <header class="hero">
+    <h1>Build an <span>LLM</span> from scratch</h1>
+    <p>Six small Python files that walk from "characters as numbers" to a working character-level GPT. ~400 lines total. Trains on a laptop in under a minute per chapter.</p>
+    <div class="hero-badges">
+      <span class="badge">Python + uv</span>
+      <span class="badge teal">PyTorch</span>
+      <span class="badge purple">CPU only</span>
+      <span class="badge green">~45 min</span>
+    </div>
+  </header>
+
+  <div class="progress-sticky">
+    <div class="progress-bar"><div id="progress-fill"></div></div>
+    <div id="score-display">0 / 6 checks complete</div>
+  </div>
+
+  <div class="container">
+
+    <section id="intro">
+      <div class="section-header"><span class="section-icon">🎯</span><h2><span class="num">0.</span> What you're about to build</h2></div>
+      <p>An LLM is, mechanically, an embarrassingly simple object: <strong>given some text, predict the next token</strong>. Repeat that one trick a few hundred times and you get an essay. Train it on the whole internet and you get the engine behind modern AI coding agents like Auggie.</p>
+      <p>This tutorial strips the idea down to its bones. We'll train a model on a tiny chunk of Shakespeare, and we'll do it character by character so you can see every number flow. By the end of Chapter 5 you'll have built the same architecture (just shrunk by ~10,000×) as the one powering GPT-4.</p>
+      <p class="muted">The companion code lives in <code>tuts/llm-from-scratch/</code> alongside this page. Open both side-by-side as you read.</p>
+
+      <div class="lesson-card">
+        <h3>The whole journey on one page</h3>
+        <ul>
+          <li><strong>Ch 1.</strong> Turn characters into integers (no model yet).</li>
+          <li><strong>Ch 2.</strong> Predict next character by counting — gives gibberish but with real letter statistics.</li>
+          <li><strong>Ch 3.</strong> Same idea, but learned with PyTorch + gradient descent.</li>
+          <li><strong>Ch 4.</strong> Add self-attention so the model can see context.</li>
+          <li><strong>Ch 5.</strong> Stack transformer blocks. This <em>is</em> GPT, in miniature.</li>
+          <li><strong>Ch 6.</strong> Steer the output with temperature and top-k sampling.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="setup">
+      <div class="section-header"><span class="section-icon">🛠️</span><h2><span class="num">0.5.</span> Setup with <code>uv</code></h2></div>
+      <p><code>uv</code> is a fast, modern Python package manager. It replaces <code>pip</code>, <code>venv</code>, <code>pyenv</code>, and <code>pip-tools</code> with a single tool. We'll use it to create an isolated environment and install PyTorch in one command.</p>
+
+      <div class="lesson-card">
+        <h3>Install <code>uv</code></h3>
+<pre class="code"><span class="shell-prompt">$ </span>brew install uv          <span class="cm"># macOS</span>
+<span class="shell-prompt">$ </span>curl -LsSf https://astral.sh/uv/install.sh | sh  <span class="cm"># Linux/macOS</span></pre>
+
+        <h3 style="margin-top:1.2rem;">Sync the project</h3>
+<pre class="code"><span class="shell-prompt">$ </span>cd tuts/llm-from-scratch
+<span class="shell-prompt">$ </span>uv sync</pre>
+
+        <p>That's it. <code>uv sync</code> reads <code>pyproject.toml</code>, downloads Python 3.11 if needed, creates <code>.venv</code>, and installs <code>torch</code>. First run takes ~30s, then it's instant.</p>
+
+        <div class="intuition">💡 To run any chapter: <code>uv run src/ch1_vocab.py</code>. No need to activate the venv — <code>uv run</code> handles that.</div>
+      </div>
+    </section>
+
+
+    <section id="ch1">
+      <div class="section-header"><span class="section-icon">🔡</span><h2><span class="num">1.</span> Vocabulary: characters as numbers</h2></div>
+      <p>Neural networks do arithmetic on numbers, not strings. So the very first job is a <em>tokenizer</em> — a function that turns text into a sequence of integers (and back). For real LLMs the tokens are sub-word pieces ("th", "ough", "##ing") learned by an algorithm called BPE. We're going to do the dumbest possible version: <strong>one token = one character</strong>.</p>
+
+      <div class="lesson-card">
+        <h3>Build the vocabulary</h3>
+        <span class="file-tag">src/ch1_vocab.py</span>
+<pre class="code"><span class="kw">from</span> pathlib <span class="kw">import</span> Path
+
+DATA = Path(__file__).resolve().parent.parent / <span class="st">"data"</span> / <span class="st">"input.txt"</span>
+text = DATA.<span class="fn">read_text</span>(encoding=<span class="st">"utf-8"</span>)
+
+<span class="cm"># The vocab is just every unique character, sorted.</span>
+chars = <span class="fn">sorted</span>(<span class="fn">set</span>(text))
+
+stoi = {ch: i <span class="kw">for</span> i, ch <span class="kw">in</span> <span class="fn">enumerate</span>(chars)}
+itos = {i: ch <span class="kw">for</span> ch, i <span class="kw">in</span> stoi.<span class="fn">items</span>()}
+
+<span class="kw">def</span> <span class="fn">encode</span>(s): <span class="kw">return</span> [stoi[c] <span class="kw">for</span> c <span class="kw">in</span> s]
+<span class="kw">def</span> <span class="fn">decode</span>(ids): <span class="kw">return</span> <span class="st">""</span>.<span class="fn">join</span>(itos[i] <span class="kw">for</span> i <span class="kw">in</span> ids)
+</pre>
+
+        <h3 style="margin-top:1.2rem;">Run it</h3>
+<pre class="code"><span class="shell-prompt">$ </span>uv run src/ch1_vocab.py</pre>
+<pre class="output"><span class="label">corpus length :</span> 5,585 characters
+<span class="label">vocabulary    :</span> 58 unique characters
+
+encode('To be, or not to be')
+  -&gt; [29, 47, 1, 35, 38, 4, 1, 47, 50, 1, 46, 47, 52, 1, 52, 47, 1, 35, 38]
+decode(...)
+  -&gt; 'To be, or not to be'</pre>
+
+        <div class="llm-link"><strong>How real LLMs differ:</strong> GPT-4 has a vocabulary of <strong>~100,000 tokens</strong> instead of 58. The tokens are sub-word pieces learned by Byte-Pair Encoding (BPE), so common words like "the" get a single token while rare words split into several. The encode/decode interface stays exactly the same.</div>
+
+        <div class="check" data-check="1">
+          <div class="q">Why use sub-word tokens (~50,000 vocab) instead of just characters (~100 vocab) in real LLMs?</div>
+          <div class="options">
+            <label><input type="radio" name="q1" value="a"/><span>It's faster to train on a bigger vocabulary.</span></label>
+            <label><input type="radio" name="q1" value="b" data-correct="true"/><span>Each token carries more meaning, so the model can attend to fewer of them for the same context window.</span></label>
+            <label><input type="radio" name="q1" value="c"/><span>Sub-word tokens can represent images and audio too.</span></label>
+          </div>
+          <div class="feedback"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="ch2">
+      <div class="section-header"><span class="section-icon">📊</span><h2><span class="num">2.</span> Bigram by counting: probability without learning</h2></div>
+      <p>Before we touch a neural network, let's build the laziest possible language model: <strong>count which characters follow which</strong>, then sample from that distribution.</p>
+      <p>This will be terrible at writing English. But the output will already have the <em>texture</em> of English — lots of "th", "he", "in"; very few "qx", "zk". Everything we do from Chapter 3 onwards is just a fancier way to learn this same idea.</p>
+
+      <div class="lesson-card">
+        <h3>Count followers, then sample</h3>
+        <span class="file-tag">src/ch2_bigram_counts.py</span>
+<pre class="code"><span class="kw">import</span> random
+<span class="kw">from</span> collections <span class="kw">import</span> Counter, defaultdict
+
+counts = <span class="fn">defaultdict</span>(Counter)
+<span class="kw">for</span> a, b <span class="kw">in</span> <span class="fn">zip</span>(text, text[<span class="nm">1</span>:]):
+    counts[a][b] += <span class="nm">1</span>
+
+<span class="kw">def</span> <span class="fn">sample_next</span>(prev):
+    c = counts[prev]
+    <span class="kw">return</span> random.<span class="fn">choices</span>(<span class="fn">list</span>(c.<span class="fn">keys</span>()), weights=<span class="fn">list</span>(c.<span class="fn">values</span>()))[<span class="nm">0</span>]
+</pre>
+
+<pre class="output"><span class="label">Top 5 followers of each common letter:</span>
+  't' -&gt; 'h':128, ' ':83, 'o':35, 'i':20, 'e':17
+  'h' -&gt; 'e':106, 'a':47, 'i':32, ' ':26, 'o':17
+  'e' -&gt; ' ':141, 'r':50, 'n':41, 'a':39, 's':38
+
+<span class="label">Generated sample:</span>
+H:
+ATomamus! e. co d myenthe!
+Ar, t ofay mealorrtsotlobur'sid k amie-Frieema ano oris;
+Bethig wear ith thofentheeagerco acoofucksthoritomshe'd</pre>
+
+        <div class="intuition">💡 Notice "th" appears constantly and "qx" never does. The model captured real English bigram statistics — and we wrote zero machine learning code.</div>
+
+        <div class="llm-link"><strong>The big limitation:</strong> a bigram model only looks at the <em>previous</em> character to pick the next one. It has no idea what was 5 characters ago. That's why the output looks like word-fragments — coherent two-character pairs glued randomly together. To do better, the model needs <em>memory</em>. That's what attention will give us.</div>
+
+        <div class="check" data-check="2">
+          <div class="q">Our counting bigram has effectively memorised a 58×58 table of probabilities. Why can't we just scale this up to "fix" the gibberish?</div>
+          <div class="options">
+            <label><input type="radio" name="q2" value="a"/><span>Counting is too slow on big text.</span></label>
+            <label><input type="radio" name="q2" value="b" data-correct="true"/><span>A k-gram table has size 58^k — going from 2-grams to 10-grams needs 58^10 ≈ 400 trillion entries.</span></label>
+            <label><input type="radio" name="q2" value="c"/><span>You'd need a different programming language.</span></label>
+          </div>
+          <div class="feedback"></div>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="ch3">
+      <div class="section-header"><span class="section-icon">🧮</span><h2><span class="num">3.</span> Same bigram, but <em>learned</em></h2></div>
+      <p>Chapter 2 used hand-counted probabilities. We'll now express the exact same model as a tiny neural network and let <strong>gradient descent</strong> fill in the table for us. This looks like a sideways move — and at first it is — but it sets up the scaffolding (loss, optimiser, batched data) we'll reuse for the rest of the chapters.</p>
+
+      <div class="lesson-card">
+        <h3>The model is a single embedding table</h3>
+        <span class="file-tag">src/ch3_bigram_learned.py</span>
+<pre class="code"><span class="kw">class</span> <span class="fn">BigramModel</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, vocab_size):
+        <span class="fn">super</span>().<span class="fn">__init__</span>()
+        <span class="cm"># Row i holds the (unnormalised) next-char distribution given char i.</span>
+        self.token_embedding = nn.<span class="fn">Embedding</span>(vocab_size, vocab_size)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, idx, targets=<span class="kw">None</span>):
+        logits = self.<span class="fn">token_embedding</span>(idx)        <span class="cm"># (B, T, vocab)</span>
+        <span class="kw">if</span> targets <span class="kw">is</span> <span class="kw">None</span>: <span class="kw">return</span> logits, <span class="kw">None</span>
+        B, T, V = logits.shape
+        loss = F.<span class="fn">cross_entropy</span>(logits.<span class="fn">view</span>(B*T, V), targets.<span class="fn">view</span>(B*T))
+        <span class="kw">return</span> logits, loss
+</pre>
+
+        <h3 style="margin-top:1.2rem;">The training loop</h3>
+<pre class="code">opt = torch.optim.<span class="fn">AdamW</span>(model.<span class="fn">parameters</span>(), lr=<span class="nm">1e-2</span>)
+<span class="kw">for</span> step <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">3001</span>):
+    xb, yb = <span class="fn">get_batch</span>(data)         <span class="cm"># random 32×8 chunks of text</span>
+    _, loss = <span class="fn">model</span>(xb, yb)
+    opt.<span class="fn">zero_grad</span>(set_to_none=<span class="kw">True</span>)
+    loss.<span class="fn">backward</span>()                 <span class="cm"># backprop</span>
+    opt.<span class="fn">step</span>()                      <span class="cm"># nudge weights downhill</span>
+</pre>
+<pre class="output"><span class="label">step    0 |</span> loss 4.5614
+<span class="label">step  500 |</span> loss 2.5876
+<span class="label">step 1000 |</span> loss 2.5212
+<span class="label">step 1500 |</span> loss 2.4901
+<span class="label">step 2000 |</span> loss 2.4710
+<span class="label">step 3000 |</span> loss 2.4506</pre>
+
+        <div class="intuition">💡 The loss is <strong>cross-entropy</strong>: roughly "how surprised was the model by the correct next character?" Lower = better. Random guessing would give <code>ln(58) ≈ 4.06</code>, so dropping to <code>~2.45</code> means the model has captured real structure.</div>
+
+        <div class="llm-link"><strong>Why bother going to PyTorch?</strong> Because every piece we add from now on — attention, MLPs, residuals — is just <em>more layers</em> in front of that same <code>cross_entropy</code> call. The training loop never changes again.</div>
+
+        <div class="check" data-check="3">
+          <div class="q">What does <code>loss.backward()</code> actually do?</div>
+          <div class="options">
+            <label><input type="radio" name="q3" value="a"/><span>It runs the model in reverse to generate text backwards.</span></label>
+            <label><input type="radio" name="q3" value="b" data-correct="true"/><span>It computes ∂loss/∂w for every trainable weight w in the model.</span></label>
+            <label><input type="radio" name="q3" value="c"/><span>It restores the model from the last checkpoint.</span></label>
+          </div>
+          <div class="feedback"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="ch4">
+      <div class="section-header"><span class="section-icon">👀</span><h2><span class="num">4.</span> Self-attention: giving the model memory</h2></div>
+      <p>Until now our model can only see the <em>current</em> character. To predict "<code>e</code>" after "<code>th</code>", or "<code>liet</code>" after "<code>Ju</code>", it needs to look further back. <strong>Self-attention</strong> is the mechanism every transformer uses to do this.</p>
+
+      <div class="lesson-card">
+        <h3>The big idea in 3 bullets</h3>
+        <ul>
+          <li>Every token emits three vectors: a <strong>query</strong>, a <strong>key</strong>, and a <strong>value</strong>.</li>
+          <li>The attention weight from token <em>i</em> to token <em>j</em> is <code>softmax(q<sub>i</sub> · k<sub>j</sub>)</code> — high when query and key point the same way.</li>
+          <li>Token <em>i</em>'s new representation is the weighted sum of all earlier <strong>value</strong> vectors. A <em>causal mask</em> blocks attention to future tokens.</li>
+        </ul>
+
+        <h3 style="margin-top:1.2rem;">The single-head implementation</h3>
+        <span class="file-tag">src/ch4_attention.py</span>
+<pre class="code"><span class="kw">class</span> <span class="fn">SelfAttentionHead</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, n_embd, head_size, block_size):
+        <span class="fn">super</span>().<span class="fn">__init__</span>()
+        self.key   = nn.<span class="fn">Linear</span>(n_embd, head_size, bias=<span class="kw">False</span>)
+        self.query = nn.<span class="fn">Linear</span>(n_embd, head_size, bias=<span class="kw">False</span>)
+        self.value = nn.<span class="fn">Linear</span>(n_embd, head_size, bias=<span class="kw">False</span>)
+        self.<span class="fn">register_buffer</span>(<span class="st">"tril"</span>, torch.<span class="fn">tril</span>(torch.<span class="fn">ones</span>(block_size, block_size)))
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        B, T, C = x.shape
+        k, q, v = self.<span class="fn">key</span>(x), self.<span class="fn">query</span>(x), self.<span class="fn">value</span>(x)
+        wei = q @ k.<span class="fn">transpose</span>(-<span class="nm">2</span>,-<span class="nm">1</span>) * k.<span class="fn">size</span>(-<span class="nm">1</span>)**-<span class="nm">0.5</span>          <span class="cm"># (B,T,T)</span>
+        wei = wei.<span class="fn">masked_fill</span>(self.tril[:T,:T]==<span class="nm">0</span>, <span class="fn">float</span>(<span class="st">"-inf"</span>))   <span class="cm"># no peeking</span>
+        wei = F.<span class="fn">softmax</span>(wei, dim=-<span class="nm">1</span>)
+        <span class="kw">return</span> wei @ v                                            <span class="cm"># (B,T,head_size)</span>
+</pre>
+
+        <div class="intuition">💡 The <code>tril</code> lower-triangular mask is what makes the model <em>causal</em> — token <em>i</em> can never see tokens after <em>i</em>. Without it, training would leak the answer and the model would learn nothing.</div>
+
+<pre class="output"><span class="label">step    0 |</span> loss 4.4503
+<span class="label">step  500 |</span> loss 2.4361
+<span class="label">step 1000 |</span> loss 2.3120
+<span class="label">step 2000 |</span> loss 2.2256
+<span class="label">step 3000 |</span> loss 2.1738</pre>
+
+        <p>Loss drops from <code>~2.45</code> (bigram) to <code>~2.17</code>. The model is using context.</p>
+
+        <div class="check" data-check="4">
+          <div class="q">What is the role of the causal mask (<code>tril</code>) during training?</div>
+          <div class="options">
+            <label><input type="radio" name="q4" value="a"/><span>It speeds up matrix multiplication by skipping zeros.</span></label>
+            <label><input type="radio" name="q4" value="b" data-correct="true"/><span>It stops a position from attending to future positions — otherwise the model would just copy the answer.</span></label>
+            <label><input type="radio" name="q4" value="c"/><span>It normalises the attention weights so they sum to 1.</span></label>
+          </div>
+          <div class="feedback"></div>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="ch5">
+      <div class="section-header"><span class="section-icon">🏗️</span><h2><span class="num">5.</span> The full transformer block</h2></div>
+      <p>A single attention head is doing real work, but four refinements turn it into the standard GPT building block. Stack two of these on top of each other and you have, in miniature, the same architecture as the model behind ChatGPT.</p>
+
+      <div class="lesson-card">
+        <h3>The four upgrades</h3>
+        <ul>
+          <li><strong>Multi-head attention.</strong> Run several heads in parallel; concat outputs. One head might track punctuation, another speaker names.</li>
+          <li><strong>Feed-forward (MLP).</strong> Attention moves info <em>between</em> positions; the MLP processes info <em>within</em> a position.</li>
+          <li><strong>Residual connections.</strong> Add each sub-layer's output back to its input — lets gradients flow around layers.</li>
+          <li><strong>LayerNorm.</strong> Normalise each position's vector before the sub-layer. Training stability.</li>
+        </ul>
+
+        <h3 style="margin-top:1.2rem;">One Transformer block</h3>
+        <span class="file-tag">src/ch5_transformer.py</span>
+<pre class="code"><span class="kw">class</span> <span class="fn">Block</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, n_embd, n_head):
+        <span class="fn">super</span>().<span class="fn">__init__</span>()
+        head_size = n_embd // n_head
+        self.sa  = <span class="fn">MultiHead</span>(n_head, head_size)
+        self.ff  = <span class="fn">FeedForward</span>(n_embd)
+        self.ln1 = nn.<span class="fn">LayerNorm</span>(n_embd)
+        self.ln2 = nn.<span class="fn">LayerNorm</span>(n_embd)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        x = x + self.<span class="fn">sa</span>(self.<span class="fn">ln1</span>(x))   <span class="cm"># residual around attention</span>
+        x = x + self.<span class="fn">ff</span>(self.<span class="fn">ln2</span>(x))   <span class="cm"># residual around MLP</span>
+        <span class="kw">return</span> x
+</pre>
+
+        <h3 style="margin-top:1.2rem;">The whole "mini-GPT"</h3>
+<pre class="code"><span class="kw">class</span> <span class="fn">MiniGPT</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, vocab_size):
+        <span class="fn">super</span>().<span class="fn">__init__</span>()
+        self.token_embedding    = nn.<span class="fn">Embedding</span>(vocab_size, N_EMBD)
+        self.position_embedding = nn.<span class="fn">Embedding</span>(BLOCK_SIZE, N_EMBD)
+        self.blocks = nn.<span class="fn">Sequential</span>(*[<span class="fn">Block</span>(N_EMBD, N_HEAD) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(N_LAYER)])
+        self.ln_f   = nn.<span class="fn">LayerNorm</span>(N_EMBD)
+        self.lm_head = nn.<span class="fn">Linear</span>(N_EMBD, vocab_size)
+</pre>
+
+<pre class="output"><span class="label">model parameters:</span> 235,898
+<span class="label">step    0 |</span> loss 4.4912
+<span class="label">step 1000 |</span> loss 2.0344
+<span class="label">step 2000 |</span> loss 1.7691
+<span class="label">step 3000 |</span> loss 1.5942
+
+<span class="label">Sample:</span>
+HAMLET:
+The wind, when the great with the strake,
+And the sleep, perchance to dream of the world's a stage,
+And all the men and woman of the night,
+That have hard.</pre>
+
+        <div class="intuition">💡 This is <strong>the architecture</strong>. GPT-4 is exactly this code, with <code>N_LAYER=120</code>, <code>N_EMBD=12288</code>, and many billions more parameters trained on the whole internet. Nothing fundamentally new — just bigger.</div>
+
+        <div class="llm-link"><strong>Scale comparison:</strong>
+          <ul style="margin-top:0.4rem;">
+            <li>Our mini-GPT: ~236,000 parameters · 2 layers · trained for 1 minute on 5KB of text.</li>
+            <li>GPT-3: ~175,000,000,000 parameters · 96 layers · trained for months on ~500GB of text.</li>
+            <li>Ratio: <strong>~750,000× more parameters</strong>, same architecture.</li>
+          </ul>
+        </div>
+
+        <div class="check" data-check="5">
+          <div class="q">Why do we add a <em>position embedding</em> on top of the token embedding?</div>
+          <div class="options">
+            <label><input type="radio" name="q5" value="a"/><span>Position embeddings store the spelling of each word.</span></label>
+            <label><input type="radio" name="q5" value="b" data-correct="true"/><span>Self-attention is order-agnostic by default; without position info the model couldn't tell "dog bites man" from "man bites dog".</span></label>
+            <label><input type="radio" name="q5" value="c"/><span>They make the model train faster on GPUs.</span></label>
+          </div>
+          <div class="feedback"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="ch6">
+      <div class="section-header"><span class="section-icon">🎛️</span><h2><span class="num">6.</span> Steering the output: temperature &amp; top-k</h2></div>
+      <p>Up to now we've sampled directly from <code>softmax(logits)</code>. Two simple knobs — both exposed by every commercial LLM API — change the feel of the output dramatically.</p>
+
+      <div class="lesson-card">
+        <h3>The sampling function</h3>
+        <span class="file-tag">src/ch6_generate.py</span>
+<pre class="code"><span class="kw">def</span> <span class="fn">generate</span>(model, idx, max_new, temperature=<span class="nm">1.0</span>, top_k=<span class="kw">None</span>):
+    <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(max_new):
+        idx_cond = idx[:, -BLOCK_SIZE:]
+        logits, _ = <span class="fn">model</span>(idx_cond)
+        logits = logits[:, -<span class="nm">1</span>, :] / <span class="fn">max</span>(temperature, <span class="nm">1e-8</span>)
+        <span class="kw">if</span> top_k <span class="kw">is</span> <span class="kw">not</span> <span class="kw">None</span>:
+            v, _ = torch.<span class="fn">topk</span>(logits, top_k)
+            logits[logits &lt; v[:, [-<span class="nm">1</span>]]] = <span class="fn">float</span>(<span class="st">"-inf"</span>)
+        probs = F.<span class="fn">softmax</span>(logits, dim=-<span class="nm">1</span>)
+        nxt = torch.<span class="fn">multinomial</span>(probs, num_samples=<span class="nm">1</span>)
+        idx = torch.<span class="fn">cat</span>([idx, nxt], dim=<span class="nm">1</span>)
+    <span class="kw">return</span> idx
+</pre>
+
+        <h3 style="margin-top:1.2rem;">Try it yourself</h3>
+        <p>This widget simulates what each setting does to a probability distribution (the top-5 next-token candidates from our trained model). Drag the temperature slider to see the bars flatten or sharpen.</p>
+
+        <div class="widget" id="tempwidget">
+          <div class="controls">
+            <span>Temperature</span>
+            <input type="range" id="tempSlider" min="0.1" max="2.0" step="0.05" value="1.0"/>
+            <span class="mono" id="tempVal">1.00</span>
+            <label style="margin-left:0.6rem;"><input type="checkbox" id="topkBox"/> top-k=3</label>
+          </div>
+          <div class="out" id="tempOut"></div>
+        </div>
+
+        <div class="intuition">💡 <strong>T &lt; 1</strong> sharpens the distribution → conservative, repetitive output. <strong>T &gt; 1</strong> flattens it → wilder, more "creative" (and more typo-y) output. <strong>top-k</strong> chops off the long tail of nonsense candidates.</div>
+
+        <div class="check" data-check="6">
+          <div class="q">Your generation suddenly produces lots of random-looking characters. Which knob do you turn first?</div>
+          <div class="options">
+            <label><input type="radio" name="q6" value="a"/><span>Increase the temperature.</span></label>
+            <label><input type="radio" name="q6" value="b" data-correct="true"/><span>Lower the temperature (or set a small top-k).</span></label>
+            <label><input type="radio" name="q6" value="c"/><span>Increase the vocab size.</span></label>
+          </div>
+          <div class="feedback"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="reflection">
+      <div class="section-header"><span class="section-icon">🪞</span><h2><span class="num">7.</span> What you actually built</h2></div>
+      <p>Stand back and look at the six files together. You wrote, end to end:</p>
+
+      <div class="summary-grid">
+        <div class="summary-card"><h4>Tokenizer</h4><p>Character ↔ integer mapping. Real LLMs use BPE for ~50,000-token vocabularies; the interface is the same.</p></div>
+        <div class="summary-card"><h4>Embeddings</h4><p>Lookup table that turns token IDs into dense vectors. Position embeddings encode order.</p></div>
+        <div class="summary-card"><h4>Self-attention</h4><p>Query/key/value triple. Causal mask. Softmax of <code>qkᵀ</code>. The same maths in GPT-4.</p></div>
+        <div class="summary-card"><h4>Transformer block</h4><p>Multi-head attention + MLP, both with residual + LayerNorm. The repeating unit of every modern LLM.</p></div>
+        <div class="summary-card"><h4>Training loop</h4><p>Cross-entropy loss, AdamW optimiser, batched random chunks. The same scaffold across every chapter.</p></div>
+        <div class="summary-card"><h4>Sampling</h4><p>Temperature + top-k. The same knobs every chat API exposes.</p></div>
+      </div>
+
+      <div class="lesson-card" style="margin-top:1.5rem;">
+        <h3>Where to go next</h3>
+        <ul>
+          <li><strong>Swap the dataset.</strong> Replace <code>data/input.txt</code> with anything — your own writing, a book, code. Re-run Chapter 5. Watch the style shift.</li>
+          <li><strong>Scale it up.</strong> Bump <code>N_LAYER=4</code>, <code>N_EMBD=192</code>, <code>BLOCK_SIZE=128</code>. Train for 10k steps. The loss will plateau lower and the output will pick up real word structure.</li>
+          <li><strong>Move to GPU.</strong> Add <code>device = "cuda" if torch.cuda.is_available() else "cpu"</code> and <code>.to(device)</code> on the model + batches. 100× faster.</li>
+          <li><strong>Read <a href="https://github.com/karpathy/nanoGPT" style="color:var(--accent2);">nanoGPT</a>.</strong> Karpathy's repo is essentially this tutorial, polished. Now that you've built it once, you'll read it like prose.</li>
+        </ul>
+
+        <div class="llm-link" style="margin-top:1rem;"><strong>The whole field on one page:</strong> everything bigger labs do — RLHF, tool use, mixture-of-experts, longer context — is a refinement on top of <em>exactly this architecture</em>. Now you've seen the engine, the rest is engineering.</div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>Code lives in <code>tuts/llm-from-scratch/</code> · No tracking, no install, just curiosity. <span style="color:var(--accent);">⚙</span></p>
+  </footer>
+
+  <script>
+    // ── Temperature/top-k visualiser ──
+    (function () {
+      const slider = document.getElementById('tempSlider');
+      const val = document.getElementById('tempVal');
+      const topk = document.getElementById('topkBox');
+      const out = document.getElementById('tempOut');
+      // Toy logits for top-5 candidates: ' ', 'e', 't', 'a', 'o' (loosely modelled after a real bigram dist).
+      const tokens = ["' '", "'e'", "'t'", "'a'", "'o'"];
+      const baseLogits = [3.8, 3.2, 2.5, 1.8, 1.4];
+      function render() {
+        const T = parseFloat(slider.value);
+        val.textContent = T.toFixed(2);
+        let scaled = baseLogits.map(l => l / T);
+        if (topk.checked) {
+          const sorted = [...scaled].sort((a,b)=>b-a);
+          const cutoff = sorted[2];
+          scaled = scaled.map(l => l < cutoff ? -Infinity : l);
+        }
+        const maxL = Math.max(...scaled.filter(isFinite));
+        const exps = scaled.map(l => isFinite(l) ? Math.exp(l - maxL) : 0);
+        const sum = exps.reduce((a,b)=>a+b, 0);
+        const probs = exps.map(e => e / sum);
+        const lines = tokens.map((t, i) => {
+          const p = probs[i];
+          const barLen = Math.round(p * 40);
+          const bar = '█'.repeat(barLen) + '░'.repeat(40 - barLen);
+          return `${t}  ${bar}  ${(p*100).toFixed(1)}%`;
+        });
+        out.textContent = lines.join('\n');
+      }
+      slider.addEventListener('input', render);
+      topk.addEventListener('change', render);
+      render();
+    })();
+
+    // ── Mini-quizzes ──
+    const TOTAL = 6;
+    let done = 0;
+    const fill = document.getElementById('progress-fill');
+    const score = document.getElementById('score-display');
+    document.querySelectorAll('.check').forEach(box => {
+      const fb = box.querySelector('.feedback');
+      box.querySelectorAll('input[type="radio"]').forEach(input => {
+        input.addEventListener('change', () => {
+          const ok = input.dataset.correct === 'true';
+          box.querySelectorAll('label').forEach(l => {
+            const inp = l.querySelector('input');
+            inp.disabled = true;
+            if (inp.dataset.correct === 'true') l.classList.add('correct');
+            else if (inp === input && !ok) l.classList.add('wrong');
+          });
+          fb.textContent = ok ? '✓ Correct.' : '✗ Not quite — the highlighted answer is the right one.';
+          fb.classList.add(ok ? 'ok' : 'bad');
+          if (!box.dataset.done) {
+            box.dataset.done = '1';
+            done++;
+            fill.style.width = (done / TOTAL * 100) + '%';
+            score.textContent = `${done} / ${TOTAL} checks complete`;
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+
