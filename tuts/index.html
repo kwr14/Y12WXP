@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Tutorials</title>
+  <style>
+    :root {
+      --bg: #0b0b0d;
+      --surface: #15151a;
+      --card: #1d1d24;
+      --card-hover: #25252e;
+      --border: #2a2a33;
+      --text: #ececf1;
+      --muted: #8a8a98;
+      --accent-git:    #f05032;
+      --accent-py:     #3776ab;
+      --accent-py2:    #ffd43b;
+      --accent-js:     #f7df1e;
+      --accent-math:   #a78bfa;
+      --accent-llm:    #f59e0b;
+      --accent-teal:   #4ec9b0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── animated background glow ── */
+    .bg-glow { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+    .bg-glow::before, .bg-glow::after { content: ''; position: absolute; width: 600px; height: 600px; border-radius: 50%; filter: blur(120px); opacity: 0.35; }
+    .bg-glow::before { background: radial-gradient(circle, #a78bfa 0%, transparent 70%); top: -200px; left: -100px; animation: drift1 18s ease-in-out infinite alternate; }
+    .bg-glow::after  { background: radial-gradient(circle, #f59e0b 0%, transparent 70%); bottom: -200px; right: -150px; animation: drift2 22s ease-in-out infinite alternate; }
+    @keyframes drift1 { from { transform: translate(0,0); } to { transform: translate(180px, 120px); } }
+    @keyframes drift2 { from { transform: translate(0,0); } to { transform: translate(-200px, -100px); } }
+
+    /* ── top nav ── */
+    nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(12px); background: rgba(15,15,20,0.7); border-bottom: 1px solid var(--border); padding: 0.9rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .brand { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.01em; }
+    .brand .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-llm), var(--accent-math)); margin-right: 0.6rem; vertical-align: middle; box-shadow: 0 0 16px var(--accent-math); }
+    nav .links { display: flex; gap: 0.4rem; font-size: 0.88rem; }
+    nav .links a { color: var(--muted); padding: 0.4rem 0.8rem; border-radius: 6px; transition: all 0.15s; }
+    nav .links a:hover { color: var(--text); background: var(--card); }
+
+    /* ── hero ── */
+    .hero { padding: 5rem 2rem 3rem; text-align: center; max-width: 920px; margin: 0 auto; }
+    .eyebrow { display: inline-block; font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--border); padding: 0.35rem 0.9rem; border-radius: 99px; margin-bottom: 1.4rem; }
+    .hero h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.025em; margin-bottom: 1.2rem; }
+    .hero h1 .grad { background: linear-gradient(120deg, var(--accent-math), var(--accent-llm) 50%, var(--accent-teal)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero p.tagline { color: var(--muted); font-size: 1.12rem; max-width: 620px; margin: 0 auto 2rem; }
+    .stats { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1.4rem; }
+    .stat { text-align: center; }
+    .stat .n { font-size: 1.6rem; font-weight: 700; color: var(--text); }
+    .stat .l { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* ── tracks ── */
+    .tracks { max-width: 1200px; margin: 2rem auto 4rem; padding: 0 2rem; }
+    .track-title { display: flex; align-items: center; gap: 0.8rem; margin: 2.5rem 0 1.2rem; font-size: 1rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; }
+    .track-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.4rem; }
+
+    /* ── card ── */
+    .card { position: relative; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.6rem; display: flex; flex-direction: column; gap: 0.9rem; transition: transform 0.2s ease, border-color 0.2s, background 0.2s; overflow: hidden; }
+    .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--c, var(--accent-teal)); opacity: 0.85; }
+    .card::after { content: ''; position: absolute; top: -40%; right: -40%; width: 220px; height: 220px; background: radial-gradient(circle, var(--c, var(--accent-teal)) 0%, transparent 65%); opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+    .card:hover { transform: translateY(-3px); border-color: var(--c, var(--accent-teal)); background: var(--card-hover); }
+    .card:hover::after { opacity: 0.12; }
+
+    .card .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.8rem; }
+    .icon { font-size: 1.8rem; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; }
+    .pill { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c, var(--accent-teal)); border: 1px solid currentColor; padding: 0.25rem 0.65rem; border-radius: 99px; opacity: 0.85; white-space: nowrap; }
+
+    .card h3 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.015em; }
+    .card .desc { color: var(--muted); font-size: 0.93rem; line-height: 1.6; }
+    .card ul { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.86rem; color: var(--text); }
+    .card ul li { display: flex; align-items: flex-start; gap: 0.55rem; }
+    .card ul li::before { content: '›'; color: var(--c, var(--accent-teal)); font-weight: 700; margin-top: -1px; }
+
+    .meta { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: auto; padding-top: 0.8rem; border-top: 1px solid var(--border); }
+    .meta span { font-size: 0.72rem; color: var(--muted); background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 0.22rem 0.55rem; border-radius: 5px; font-family: 'SF Mono', 'Consolas', monospace; }
+
+    .cta { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.4rem; color: var(--c, var(--accent-teal)); font-weight: 600; font-size: 0.92rem; transition: gap 0.2s; }
+    .card:hover .cta { gap: 0.7rem; }
+    .cta .arrow { transition: transform 0.2s; }
+    .card:hover .cta .arrow { transform: translateX(2px); }
+
+    /* ── footer ── */
+    footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; text-align: center; color: var(--muted); font-size: 0.88rem; max-width: 1200px; margin: 2rem auto 0; }
+    footer code { font-family: 'SF Mono', 'Consolas', monospace; background: var(--card); border: 1px solid var(--border); padding: 0.1rem 0.45rem; border-radius: 4px; font-size: 0.85em; color: var(--text); }
+
+    @media (max-width: 640px) {
+      .hero { padding: 3rem 1.2rem 2rem; }
+      nav { padding: 0.8rem 1rem; }
+      nav .links { font-size: 0.78rem; }
+      .tracks { padding: 0 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <nav>
+    <div class="brand"><span class="dot"></span> Interactive Tutorials</div>
+    <div class="links">
+      <a href="#foundations">Foundations</a>
+      <a href="#ai">AI &amp; Maths</a>
+      <a href="../presenter-overview.html">Presenter deck</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <span class="eyebrow">Self-paced · No install · Single HTML files</span>
+    <h1>Learn by <span class="grad">doing</span>, one page at a time.</h1>
+    <p class="tagline">A small, opinionated library of interactive tutorials. Open any one in a browser and you're learning &mdash; no setup, no accounts, no ads. From your first <code>git commit</code> to your own GPT.</p>
+    <div class="stats">
+      <div class="stat"><div class="n">5</div><div class="l">Tutorials</div></div>
+      <div class="stat"><div class="n">~3 hrs</div><div class="l">Total content</div></div>
+      <div class="stat"><div class="n">0</div><div class="l">Installs to start</div></div>
+    </div>
+  </header>
+
+  <main class="tracks">
+    <div class="track-title" id="foundations">Foundations</div>
+    <div class="grid">
+
+      <a class="card" href="git-tutorial.html" style="--c: var(--accent-git);">
+        <div class="top">
+          <div class="icon">🌿</div>
+          <span class="pill">Tooling</span>
+        </div>
+        <h3>Git &amp; GitHub</h3>
+        <p class="desc">The version-control system every developer touches every day. Learn the mental model first, then the commands.</p>
+        <ul>
+          <li>init, add, commit, log &mdash; the daily loop</li>
+          <li>Branching, merging &amp; resolving conflicts</li>
+          <li>The full GitHub flow: clone &rarr; PR &rarr; merge</li>
+          <li>Recovering from common "oh no" moments</li>
+        </ul>
+        <div class="meta"><span>~45 min</span><span>Beginner</span><span>7-question quiz</span></div>
+        <span class="cta">Open tutorial <span class="arrow">&rarr;</span></span>
+      </a>
+
+      <a class="card" href="python-tutorial.html" style="--c: var(--accent-py2);">
+        <div class="top">
+          <div class="icon">🐍</div>
+          <span class="pill">Language</span>
+        </div>
+        <h3>Python for Beginners</h3>
+        <p class="desc">The most readable language in the world. Goes from variables to writing real functions in one sitting.</p>
+        <ul>
+          <li>Variables, strings, numbers, booleans</li>
+          <li>Lists, dicts, loops, conditionals</li>
+          <li>Functions, scope, and how to think in Python</li>
+          <li>Solve FizzBuzz from scratch</li>
+        </ul>
+        <div class="meta"><span>~45 min</span><span>Beginner</span><span>Live exercises</span></div>
+        <span class="cta">Open tutorial <span class="arrow">&rarr;</span></span>
+      </a>
+
+      <a class="card" href="javascript-tutorial.html" style="--c: var(--accent-js);">
+        <div class="top">
+          <div class="icon">⚡</div>
+          <span class="pill">Language</span>
+        </div>
+        <h3>JavaScript for Beginners</h3>
+        <p class="desc">The language of the web. Covers modern syntax and finishes with a working DOM-manipulation page.</p>
+        <ul>
+          <li>let / const, arrays, objects, template literals</li>
+          <li>Arrow functions, map / filter / reduce</li>
+          <li>Manipulating the DOM &amp; handling events</li>
+          <li>Build a tiny interactive page</li>
+        </ul>
+        <div class="meta"><span>~45 min</span><span>Beginner</span><span>7-question quiz</span></div>
+        <span class="cta">Open tutorial <span class="arrow">&rarr;</span></span>
+      </a>
+
+    </div>
+
+    <div class="track-title" id="ai">AI &amp; Maths</div>
+    <div class="grid">
+
+      <a class="card" href="math-for-llms-tutorial.html" style="--c: var(--accent-math);">
+        <div class="top">
+          <div class="icon">📐</div>
+          <span class="pill">Intuition</span>
+        </div>
+        <h3>Maths for LLMs</h3>
+        <p class="desc">The minimum maths you need to understand how AI actually works. Brilliant-style &mdash; drag, slide, and watch the formulas come alive.</p>
+        <ul>
+          <li>Vectors &amp; dot products (drag the arrows)</li>
+          <li>Matrices as transformations (slide the entries)</li>
+          <li>Derivatives &amp; the gradient, geometrically</li>
+          <li>Step through gradient descent on a loss curve</li>
+        </ul>
+        <div class="meta"><span>~40 min</span><span>Intermediate</span><span>Interactive widgets</span></div>
+        <span class="cta">Open tutorial <span class="arrow">&rarr;</span></span>
+      </a>
+
+      <a class="card" href="llm-from-scratch-tutorial.html" style="--c: var(--accent-llm);">
+        <div class="top">
+          <div class="icon">🧠</div>
+          <span class="pill">Project</span>
+        </div>
+        <h3>Build an LLM from scratch</h3>
+        <p class="desc">Six small Python files that build up to a working character-level GPT. Same architecture as the engine behind modern AI &mdash; just shrunk ~10,000&times;.</p>
+        <ul>
+          <li>Tokenization &rarr; counting bigram (no ML yet)</li>
+          <li>Learned embeddings with PyTorch &amp; AdamW</li>
+          <li>Causal self-attention from first principles</li>
+          <li>Full Transformer block &rarr; sampling with temperature</li>
+        </ul>
+        <div class="meta"><span>~50 min</span><span>Advanced</span><span>Python + uv</span><span>Runnable</span></div>
+        <span class="cta">Open tutorial <span class="arrow">&rarr;</span></span>
+      </a>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>All tutorials are single-file HTML. Save them, fork them, fix typos &mdash; the source is right there.</p>
+    <p style="margin-top:0.5rem;">Companion code for the LLM tutorial lives in <code>tuts/llm-from-scratch/</code>.</p>
+  </footer>
+</body>
+</html>
