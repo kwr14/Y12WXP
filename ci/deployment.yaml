@@ -26,7 +26,7 @@ spec:
         fsGroup: 101
       containers:
         - name: nginx
-          image: registry-adapter.tools.cosmic.sky/core-platform/plutus/test/y12wxp/tuts:8530df8
+          image: registry-adapter.tools.cosmic.sky/core-platform/plutus/test/y12wxp/tuts:a652d36
           imagePullPolicy: Always
           securityContext:
             allowPrivilegeEscalation: false
